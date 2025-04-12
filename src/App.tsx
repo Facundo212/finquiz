@@ -1,17 +1,43 @@
-import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import type { ReactElement } from 'react';
+import { Toaster } from 'sonner';
 
-import { Button } from '@/components/ui/button';
+import Login from '@/containers/Login';
+import Home from '@/containers/Home';
 
-import './App.css';
+import RouteRestrictor from '@/hocs/RouteRestrcitor';
 
-function App() {
-  const [count, setCount] = useState(0);
+interface AppRoute {
+  path: string;
+  element: ReactElement;
+  isPrivate: boolean;
+}
 
+const appRoutes: AppRoute[] = [
+  { path: '/', element: <Login />, isPrivate: false },
+  { path: '/home', element: <Home />, isPrivate: true },
+];
+
+function App(): ReactElement {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh gap-2">
-      <div>{count}</div>
-      <Button onClick={() => setCount((prevCount) => prevCount + 1)}>Click me</Button>
-    </div>
+    <>
+      <Toaster richColors />
+      <Router>
+        <Routes>
+          {appRoutes.map(({ path, element, isPrivate }) => (
+            <Route
+              key={path}
+              path={path}
+              element={(
+                <RouteRestrictor isPrivate={isPrivate}>
+                  {element}
+                </RouteRestrictor>
+              )}
+            />
+          ))}
+        </Routes>
+      </Router>
+    </>
   );
 }
 
