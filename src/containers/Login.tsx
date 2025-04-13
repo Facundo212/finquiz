@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import DEFAULT_COURSE_ID from '@/constants';
 
 import { useLoginMutation } from '@/services/api';
 import { setSession } from '@/reducers/session/sessionSlice';
@@ -27,7 +28,9 @@ const formSchema: z.ZodSchema = z.object({
 });
 
 function Login() {
-  const [login, { isLoading, isSuccess, error }] = useLoginMutation();
+  const [login, {
+    data, isLoading, isSuccess, error,
+  }] = useLoginMutation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,10 +38,11 @@ function Login() {
   useEffect(
     () => {
       if (isSuccess) {
-        navigate('/home');
+        dispatch(setSession(data));
+        navigate(`/courses/${DEFAULT_COURSE_ID}`);
       }
     },
-    [isSuccess, navigate],
+    [isSuccess, data, dispatch, navigate],
   );
 
   useEffect(() => {
@@ -61,10 +65,8 @@ function Login() {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const { data: result } = await login(data);
-
-    dispatch(setSession(result));
+  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+    await login(formData);
   };
 
   return (

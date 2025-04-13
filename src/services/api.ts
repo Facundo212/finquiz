@@ -55,7 +55,9 @@ export const api = createApi({
           expiry,
         } = meta || {};
 
-        const { name, nickname, email } = data || {};
+        const {
+          name, nickname, email, role,
+        } = data || {};
 
         localStorage.setItem('accessToken', accessToken || '');
         localStorage.setItem('client', client || '');
@@ -64,6 +66,7 @@ export const api = createApi({
         localStorage.setItem('name', name || '');
         localStorage.setItem('email', email || '');
         localStorage.setItem('nickname', nickname || '');
+        localStorage.setItem('role', role || '');
 
         return {
           ...meta,
@@ -71,6 +74,7 @@ export const api = createApi({
             name,
             email,
             nickname,
+            role,
           },
         };
       },
@@ -97,6 +101,7 @@ export const api = createApi({
         localStorage.removeItem('client');
         localStorage.removeItem('uid');
         localStorage.removeItem('expiry');
+        localStorage.removeItem('role');
       },
     }),
   }),
