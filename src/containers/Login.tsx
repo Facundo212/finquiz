@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import DEFAULT_COURSE_ID from '@/constants';
 
 import { useLoginMutation } from '@/services/api';
 import { setSession } from '@/reducers/session/sessionSlice';
@@ -39,7 +38,7 @@ function Login() {
     () => {
       if (isSuccess) {
         dispatch(setSession(data));
-        navigate(`/courses/${DEFAULT_COURSE_ID}`);
+        navigate(`/courses/${localStorage.getItem('selectedCourseId')}`);
       }
     },
     [isSuccess, data, dispatch, navigate],
