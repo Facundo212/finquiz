@@ -9,6 +9,7 @@ export interface SessionState {
     name: string | null;
     email: string | null;
     nickname: string | null;
+    role: string | null;
   };
 }
 
@@ -21,6 +22,7 @@ const initialState: SessionState = {
     name: localStorage.getItem('name'),
     email: localStorage.getItem('email'),
     nickname: localStorage.getItem('nickname'),
+    role: localStorage.getItem('role'),
   },
 };
 

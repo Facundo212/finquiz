@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 import { useLogoutMutation } from '@/services/api';
 import { RootState } from '@/reducers/store';
@@ -41,8 +41,9 @@ function Navbar() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="cursor-pointer">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>NB</AvatarFallback>
+            <AvatarFallback>
+              {name?.split(' ').map((n) => n[0]).join('').toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="m-6 my-0 w-48">
