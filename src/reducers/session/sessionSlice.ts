@@ -10,6 +10,7 @@ export interface SessionState {
     email: string | null;
     nickname: string | null;
     role: string | null;
+    selectedCourseId: string | null;
   };
 }
 
@@ -23,6 +24,7 @@ const initialState: SessionState = {
     email: localStorage.getItem('email'),
     nickname: localStorage.getItem('nickname'),
     role: localStorage.getItem('role'),
+    selectedCourseId: localStorage.getItem('selectedCourseId'),
   },
 };
 

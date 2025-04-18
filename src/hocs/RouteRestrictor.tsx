@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 
-import DEFAULT_COURSE_ID from '@/constants';
-
 interface RouteRestrictorProps {
   children: ReactNode;
   needAuth: boolean;
@@ -21,7 +19,7 @@ function RouteRestrictor({ children, needAuth, allowedRoles }: RouteRestrictorPr
   }
 
   if (isAuthenticated && (!needAuth || (needAuth && !isAuthorized))) {
-    return <Navigate to={`/courses/${DEFAULT_COURSE_ID}`} />;
+    return <Navigate to={`/courses/${localStorage.getItem('selectedCourseId')}`} />;
   }
 
   return children;

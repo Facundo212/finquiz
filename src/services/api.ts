@@ -56,7 +56,7 @@ export const api = createApi({
         } = meta || {};
 
         const {
-          name, nickname, email, role,
+          name, nickname, email, role, selected_course_id: selectedCourseId,
         } = data || {};
 
         localStorage.setItem('accessToken', accessToken || '');
@@ -67,6 +67,7 @@ export const api = createApi({
         localStorage.setItem('email', email || '');
         localStorage.setItem('nickname', nickname || '');
         localStorage.setItem('role', role || '');
+        localStorage.setItem('selectedCourseId', selectedCourseId || '');
 
         return {
           ...meta,
@@ -75,6 +76,7 @@ export const api = createApi({
             email,
             nickname,
             role,
+            selectedCourseId,
           },
         };
       },
@@ -102,9 +104,35 @@ export const api = createApi({
         localStorage.removeItem('uid');
         localStorage.removeItem('expiry');
         localStorage.removeItem('role');
+        localStorage.removeItem('selectedCourseId');
+      },
+    }),
+    courseInfo: builder.query({
+      query: ({ courseId }: { courseId: string }) => ({
+        url: `api/v1/courses/${courseId}`,
+        method: 'GET',
+      }),
+      transformResponse: ({ data }) => {
+        const { id, name, description } = data || {};
+        return {
+          course: {
+            id,
+            name,
+            description,
+          },
+        };
+      },
+      transformErrorResponse: (error: ErrorResponse): { meta, status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al obtener la información del curso'],
+        };
       },
     }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = api;
+export const { useLoginMutation, useLogoutMutation, useCourseInfoQuery } = api;
