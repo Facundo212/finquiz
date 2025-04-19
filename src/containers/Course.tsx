@@ -9,7 +9,7 @@ import { useCourseInfoQuery } from '@/services/api';
 
 function Course() {
   const { courseId } = useParams();
-  const { data, isLoading, isError } = useCourseInfoQuery({ courseId });
+  const { data, isLoading, isError } = useCourseInfoQuery({ courseId: courseId ?? '' });
 
   if (isError) {
     return (
