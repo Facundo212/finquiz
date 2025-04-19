@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Spinner } from '@/components/ui/spinner';
 import Navbar from '@/components/navbar';
 import CourseHero from '@/components/courseHero';
+import UnitCard from '@/components/unitCard';
 
 import { useCourseInfoQuery } from '@/services/api';
 
@@ -42,6 +43,23 @@ function Course() {
           }}
         />
       )}
+      <div className="container mx-auto py-10 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...data.course.units]
+            .sort((a, b) => a.position - b.position)
+            .map((unit) => (
+              <UnitCard
+                key={unit.id}
+                unit={{
+                  id: unit.id,
+                  name: unit.name,
+                  description: unit.description,
+                  position: unit.position,
+                }}
+              />
+            ))}
+        </div>
+      </div>
     </>
   );
 }

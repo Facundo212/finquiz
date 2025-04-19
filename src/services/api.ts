@@ -119,10 +119,23 @@ export const api = createApi({
             id,
             name,
             description,
+            units: data.units.map(
+              (unit: {
+                id: number;
+                name: string;
+                description: string;
+                position: number;
+              }) => ({
+                id: unit.id,
+                name: unit.name,
+                description: unit.description,
+                position: unit.position,
+              }),
+            ),
           },
         };
       },
-      transformErrorResponse: (error: ErrorResponse): { meta, status: number; data: string[] } => {
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
         const { data: { data }, status } = error;
         const { errors } = data || {};
 
