@@ -40,6 +40,7 @@ export const api = createApi({
       };
     },
   }),
+  tagTypes: ['Course'],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (body) => ({
@@ -112,6 +113,7 @@ export const api = createApi({
         url: `api/v1/courses/${courseId}`,
         method: 'GET',
       }),
+      providesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
       transformResponse: ({ data }) => {
         const { id, name, description } = data || {};
         return {
@@ -145,7 +147,29 @@ export const api = createApi({
         };
       },
     }),
+    updateCourse: builder.mutation({
+      query: ({ courseId, body }: {
+        courseId: string;
+        body: { name?: string; description?: string };
+      }) => ({
+        url: `api/v1/courses/${courseId}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al actualizar el curso'],
+        };
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useCourseInfoQuery } = api;
+export const {
+  useLoginMutation, useLogoutMutation, useCourseInfoQuery, useUpdateCourseMutation,
+} = api;
