@@ -28,7 +28,7 @@ function UnitCard({ unit }: UnitCardProps) {
       key={unit.id}
       onClick={handleClick}
       className={cn(
-        'flex flex-col cursor-pointer transition-colors duration-200',
+        'flex flex-col cursor-pointer transition-colors hover:bg-muted/50 duration-200',
         isSelected
           ? 'border-primary shadow-[0_0_5px_0] shadow-primary'
           : 'border-primary-foreground'
@@ -37,7 +37,9 @@ function UnitCard({ unit }: UnitCardProps) {
     >
       <CardHeader className="h-70 p-6 grid-rows-6">
         <CardTitle>{unit.name}</CardTitle>
-        <CardDescription>{unit.description}</CardDescription>
+        <CardDescription className="line-clamp-8 overflow-hidden">
+          {unit.description}
+        </CardDescription>
       </CardHeader>
     </Card>
   );

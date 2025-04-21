@@ -147,6 +147,26 @@ export const api = createApi({
         };
       },
     }),
+    createUnit: builder.mutation({
+      query: ({ courseId, body }: {
+        courseId: string;
+        body: { name: string; description: string };
+      }) => ({
+        url: `api/v1/courses/${courseId}/units`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al crear la unidad'],
+        };
+      },
+    }),
     updateCourse: builder.mutation({
       query: ({ courseId, body }: {
         courseId: string;
@@ -171,5 +191,9 @@ export const api = createApi({
 });
 
 export const {
-  useLoginMutation, useLogoutMutation, useCourseInfoQuery, useUpdateCourseMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useCourseInfoQuery,
+  useCreateUnitMutation,
+  useUpdateCourseMutation,
 } = api;
