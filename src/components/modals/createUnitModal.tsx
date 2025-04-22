@@ -3,16 +3,17 @@ import { toast } from 'sonner';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 
 import BaseModal from '@/components/modals/baseModal';
-import CreateUnitForm from '@/components/forms/createUnitForm';
+import UnitForm from '@/components/forms/unitForm';
 import AddUnitCard from '@/components/addUnitCard';
 
 import { useCreateUnitMutation } from '@/services/api';
 
 interface CreateUnitsProps {
   courseId: string;
+  maxPosition: number;
 }
 
-function CreateUnitModal({ courseId: id }: CreateUnitsProps) {
+function CreateUnitModal({ courseId: id, maxPosition }: CreateUnitsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [createUnit, { isLoading, isSuccess, error }] = useCreateUnitMutation();
 
@@ -47,11 +48,15 @@ function CreateUnitModal({ courseId: id }: CreateUnitsProps) {
         <AddUnitCard onClick={() => setIsDialogOpen(true)} />
       )}
       title="Crear unidad"
-      description="Modifica la información que verá el estudiante. Una vez listo, selecciona Guardar."
+      description="Crea una nueva unidad para el curso. Una vez listo, selecciona Crear."
     >
-      <CreateUnitForm
+      <UnitForm
+        initialValues={{
+          maxPosition,
+        }}
         onSubmit={handleSubmit}
         isLoading={isLoading}
+        submitButtonText="Crear"
       />
     </BaseModal>
   );
