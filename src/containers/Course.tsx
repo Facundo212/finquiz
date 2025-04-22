@@ -11,6 +11,13 @@ import { RootState } from '@/reducers/store';
 
 import { useCourseInfoQuery } from '@/services/api';
 
+interface Unit {
+  id: number;
+  name: string;
+  description: string;
+  position: number;
+}
+
 function Course() {
   const { courseId } = useParams();
   const { data, isLoading, isError } = useCourseInfoQuery({ courseId: courseId ?? '' });
@@ -32,9 +39,13 @@ function Course() {
           <Spinner size="large" />
         </div>
       </>
-
     );
   }
+
+  const units = data?.course.units
+    ? [...data.course.units].sort((a: Unit, b: Unit) => a.position - b.position)
+    : [];
+  const maxPosition = units.length ? units[units.length - 1].position : 0;
 
   return (
     <>
@@ -50,22 +61,23 @@ function Course() {
       )}
       <div className="container mx-auto py-10 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...data.course.units]
-            .sort((a, b) => a.position - b.position)
-            .map((unit) => (
-              <UnitCard
-                key={unit.id}
-                unit={{
-                  id: unit.id,
-                  name: unit.name,
-                  description: unit.description,
-                  position: unit.position,
-                }}
-              />
-            ))}
+          {units.map((unit: Unit) => (
+            <UnitCard
+              key={unit.id}
+              unit={{
+                id: unit.id,
+                name: unit.name,
+                description: unit.description,
+                position: unit.position,
+                maxPosition,
+                courseId: data.course.id,
+              }}
+            />
+          ))}
           {role === 'teacher' && (
             <CreateUnitModal
               courseId={data.course.id}
+              maxPosition={maxPosition}
             />
           )}
         </div>

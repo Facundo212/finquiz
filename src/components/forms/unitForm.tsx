@@ -17,19 +17,33 @@ import { Textarea } from '@/components/ui/textarea';
 const formSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
   description: z.string().min(1, 'La descripción es requerida'),
+  position: z.number().min(1, 'La posición debe ser mayor o igual a 1').optional(),
 });
 
-interface CreateUnitFormProps {
+interface UnitFormProps {
   onSubmit: (data: z.infer<typeof formSchema>) => void;
   isLoading?: boolean;
+  initialValues?: {
+    name?: string;
+    description?: string;
+    position?: number;
+    maxPosition?: number;
+  };
+  submitButtonText?: string;
 }
 
-function CreateUnitForm({ onSubmit, isLoading = false }: CreateUnitFormProps) {
+function UnitForm({
+  onSubmit,
+  isLoading = false,
+  initialValues = {},
+  submitButtonText = 'Guardar',
+}: UnitFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: 'Mi nueva unidad!',
-      description: 'Descripción de la nueva unidad',
+      name: initialValues.name || '',
+      description: initialValues.description || '',
+      position: initialValues.position ?? (initialValues.maxPosition ?? 0) + 1,
     },
   });
 
@@ -75,9 +89,36 @@ function CreateUnitForm({ onSubmit, isLoading = false }: CreateUnitFormProps) {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="position"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Posición</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={
+                      initialValues.position
+                        ? initialValues.maxPosition ?? 1
+                        : (initialValues.maxPosition ?? 0) + 1
+                    }
+                    value={field.value}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      field.onChange(value);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex justify-end">
-            <Button type="submit" disabled={isLoading}>
-              Guardar
+            <Button type="submit" disabled={isLoading || !form.formState.isDirty}>
+              {submitButtonText}
             </Button>
           </div>
         </form>
@@ -86,8 +127,10 @@ function CreateUnitForm({ onSubmit, isLoading = false }: CreateUnitFormProps) {
   );
 }
 
-CreateUnitForm.defaultProps = {
+UnitForm.defaultProps = {
   isLoading: false,
+  initialValues: {},
+  submitButtonText: 'Guardar',
 };
 
-export default CreateUnitForm;
+export default UnitForm;

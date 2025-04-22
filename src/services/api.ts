@@ -187,6 +187,27 @@ export const api = createApi({
         };
       },
     }),
+    updateUnit: builder.mutation({
+      query: ({ courseId, unitId, body }: {
+        courseId: string;
+        unitId: string;
+        body: { name?: string; description?: string; position?: number };
+      }) => ({
+        url: `api/v1/courses/${courseId}/units/${unitId}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al actualizar la unidad'],
+        };
+      },
+    }),
   }),
 });
 
@@ -196,4 +217,5 @@ export const {
   useCourseInfoQuery,
   useCreateUnitMutation,
   useUpdateCourseMutation,
+  useUpdateUnitMutation,
 } = api;
