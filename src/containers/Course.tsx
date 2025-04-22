@@ -1,15 +1,20 @@
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { Spinner } from '@/components/ui/spinner';
 import Navbar from '@/components/navbar';
 import CourseHero from '@/components/courseHero';
 import UnitCard from '@/components/unitCard';
+import CreateUnitModal from '@/components/modals/createUnitModal';
+
+import { RootState } from '@/reducers/store';
 
 import { useCourseInfoQuery } from '@/services/api';
 
 function Course() {
   const { courseId } = useParams();
   const { data, isLoading, isError } = useCourseInfoQuery({ courseId: courseId ?? '' });
+  const { user: { role } } = useSelector((state: RootState) => state.session);
 
   if (isError) {
     return (
@@ -58,6 +63,11 @@ function Course() {
                 }}
               />
             ))}
+          {role === 'teacher' && (
+            <CreateUnitModal
+              courseId={data.course.id}
+            />
+          )}
         </div>
       </div>
     </>
