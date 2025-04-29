@@ -6,7 +6,6 @@ import RouteRestrictor from '@/hocs/RouteRestrictor';
 import Login from '@/containers/Login';
 import NotFound from '@/containers/NotFound';
 import Course from '@/containers/Course';
-import Home from '@/containers/Home';
 import Questionnaire from '@/containers/questionnaire/index';
 
 import MainLayout from './layouts/MainLayout';
@@ -27,10 +26,10 @@ const appRoutes: AppRoute[] = [
     path: '/courses/:courseId', element: <Course />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
   },
   {
-    path: '*', element: <NotFound />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: false,
+    path: '/questionnaires/:id', element: <Questionnaire />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
   },
   {
-    path: '/questionnaires/:id', element: <Questionnaire />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
+    path: '*', element: <NotFound />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
   },
 ];
 

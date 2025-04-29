@@ -2,7 +2,6 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { Spinner } from '@/components/ui/spinner';
-import Navbar from '@/components/navbar';
 import CourseHero from '@/components/courseHero';
 import UnitCard from '@/components/unitCard';
 import CreateUnitModal from '@/components/modals/createUnitModal';
@@ -33,12 +32,9 @@ function Course() {
 
   if (isLoading) {
     return (
-      <>
-        <Navbar />
-        <div className="flex items-center justify-center h-[calc(100vh-theme(space.16))]">
-          <Spinner size="large" />
-        </div>
-      </>
+      <div className="flex items-center justify-center h-[calc(100vh-theme(space.16))]">
+        <Spinner size="large" />
+      </div>
     );
   }
 
@@ -49,7 +45,6 @@ function Course() {
 
   return (
     <>
-      <Navbar />
       {data && (
         <CourseHero
           course={{
