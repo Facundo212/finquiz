@@ -5,47 +5,61 @@ import { Toaster } from 'sonner';
 import Login from '@/containers/Login';
 import NotFound from '@/containers/NotFound';
 import Course from '@/containers/Course';
+import Questionnaire from '@/containers/questionnaire/index';
 
 import RouteRestrictor from '@/hocs/RouteRestrictor';
+import MainLayout from './layouts/MainLayout';
 
 interface AppRoute {
   path: string;
   element: ReactElement;
   needAuth: boolean;
   allowedRoles: string[];
+  useLayout: boolean;
 }
 
 const appRoutes: AppRoute[] = [
   {
-    path: '/', element: <Login />, needAuth: false, allowedRoles: ['student', 'teacher'],
+    path: '/', element: <Login />, needAuth: false, allowedRoles: ['student', 'teacher'], useLayout: false,
   },
   {
-    path: '/courses/:courseId', element: <Course />, needAuth: true, allowedRoles: ['student', 'teacher'],
+    path: '/courses/:courseId', element: <Course />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
   },
   {
-    path: '*', element: <NotFound />, needAuth: true, allowedRoles: ['student', 'teacher'],
+    path: '/questionnaires/:id', element: <Questionnaire />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
+  },
+  {
+    path: '*', element: <NotFound />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
   },
 ];
 
 function App(): ReactElement {
+  const routesWithLayout = appRoutes.filter(({ useLayout }) => useLayout);
+  const routesWithoutLayout = appRoutes.filter(({ useLayout }) => !useLayout);
+
+  const renderRoute = ({
+    path, element, needAuth, allowedRoles,
+  }: AppRoute) => (
+    <Route
+      key={path}
+      path={path}
+      element={(
+        <RouteRestrictor needAuth={needAuth} allowedRoles={allowedRoles}>
+          {element}
+        </RouteRestrictor>
+      )}
+    />
+  );
+
   return (
     <>
       <Toaster richColors />
       <Router>
         <Routes>
-          {appRoutes.map(({
-            path, element, needAuth, allowedRoles,
-          }) => (
-            <Route
-              key={path}
-              path={path}
-              element={(
-                <RouteRestrictor needAuth={needAuth} allowedRoles={allowedRoles}>
-                  {element}
-                </RouteRestrictor>
-              )}
-            />
-          ))}
+          {routesWithoutLayout.map(renderRoute)}
+          <Route element={<MainLayout />}>
+            {routesWithLayout.map(renderRoute)}
+          </Route>
         </Routes>
       </Router>
     </>

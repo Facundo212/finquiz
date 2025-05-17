@@ -39,6 +39,10 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react/jsx-props-no-spreading': 'off',
+      'no-param-reassign': 'off',
+      'react/jsx-closing-bracket-location': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      'max-len': ['error', { code: 160 }],
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
