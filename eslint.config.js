@@ -42,7 +42,7 @@ export default tseslint.config(
       'no-param-reassign': 'off',
       'react/jsx-closing-bracket-location': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
-      'max-len': ['error', { code: 140 }],
+      'max-len': ['error', { code: 160 }],
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

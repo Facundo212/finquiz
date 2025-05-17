@@ -59,8 +59,6 @@ export const questionnaireApi = api.injectEndpoints({
       async onQueryStarted({ questionnaireId }, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
 
-        // Needed to add as any because of a type error, it didn't happen when this was in api.ts
-        // TODO: Esto deberia poner en verde a la respuesta correcta tambien
         dispatch(
           // @ts-expect-error - RTK Query types are not properly inferred here
           api.util.updateQueryData('getQuestionnaire', questionnaireId, (draft: Questionnaire) => {

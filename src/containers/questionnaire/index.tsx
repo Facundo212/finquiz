@@ -12,15 +12,17 @@ import QuestionCard from './components/questionCard';
 import CongratulationsCard from './components/congratulationsCard';
 
 function Questionnaire() {
-  const { id } = useParams();
+  const { id: idParam } = useParams();
   const dispatch = useDispatch();
+
+  const id = Number(idParam);
 
   const {
     data: questionnaireData,
     error: questionnaireError,
     isLoading: questionnaireLoading,
     isSuccess: isQuestionnaireSuccess,
-  } = useGetQuestionnaireQuery(Number(id));
+  } = useGetQuestionnaireQuery(id);
 
   const isFinished = useMemo(
     () => questionnaireData?.questions.length === questionnaireData?.currentPosition,
@@ -32,7 +34,7 @@ function Questionnaire() {
     error: questionError,
     isLoading: questionLoading,
   } = useGetQuestionQuery({
-    questionnaireId: Number(id),
+    questionnaireId: id,
     questionId: questionnaireData?.questions[questionnaireData?.currentPosition]?.id || 0,
   }, {
     skip: !isQuestionnaireSuccess || isFinished,
@@ -43,7 +45,7 @@ function Questionnaire() {
   const advanceAction = () => {
     dispatch(
       // @ts-expect-error - RTK Query types are not properly inferred here
-      api.util.updateQueryData('getQuestionnaire', Number(id), (draft: Questionnaire) => {
+      api.util.updateQueryData('getQuestionnaire', id, (draft: Questionnaire) => {
         draft.currentPosition += 1;
       }),
     );
@@ -51,7 +53,7 @@ function Questionnaire() {
 
   const answerQuestionAction = (optionId: number) => (
     answerQuestion({
-      questionnaireId: Number(id),
+      questionnaireId: id,
       questionId: questionData!.id,
       answer: optionId,
     })
@@ -67,10 +69,6 @@ function Questionnaire() {
 
   return (
     <div className="p-12 h-full">
-      <h1 className="text-4xl font-bold">
-        Cuestionario:
-        {` ${questionnaireData?.name}`}
-      </h1>
       {
         isFinished ? (
           <div className="flex flex-col items-center justify-center gap-4 h-full transition-all duration-500
