@@ -14,6 +14,7 @@ export interface ExtendedQuestion extends Question {
   title: string;
   stem: string;
   options: QuestionOption[];
+  generating: boolean;
 }
 
 export interface Questionnaire {

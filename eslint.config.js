@@ -48,6 +48,7 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       'react/react-in-jsx-scope': 'off',
+      'react/button-has-type': ['error', { allowAsProps: true }],
       'import/extensions': [
         'error',
         'ignorePackages',

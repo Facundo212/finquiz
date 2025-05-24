@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
+import { LoaderQuestionnaire } from '@/components/loaderQuestionnaire';
 
 import type { Questionnaire } from '@/services/questionnaires'; // TODO: Make all types be imported like this
 
@@ -13,9 +15,10 @@ import CongratulationsCard from './components/congratulationsCard';
 
 function Questionnaire() {
   const { id: idParam } = useParams();
+  const id = Number(idParam);
   const dispatch = useDispatch();
 
-  const id = Number(idParam);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const {
     data: questionnaireData,
@@ -38,7 +41,14 @@ function Questionnaire() {
     questionId: questionnaireData?.questions[questionnaireData?.currentPosition]?.id || 0,
   }, {
     skip: !isQuestionnaireSuccess || isFinished,
+    pollingInterval: isGenerating ? 10000 : 0,
   });
+
+  useEffect(() => {
+    if (questionData) {
+      setIsGenerating(questionData.generating);
+    }
+  }, [questionData]);
 
   const [answerQuestion] = useAnswerQuestionMutation();
 
@@ -63,8 +73,8 @@ function Questionnaire() {
     return <div>Error</div>;
   }
 
-  if (questionnaireLoading || questionLoading) {
-    return <div>Loading</div>;
+  if (questionnaireLoading || questionLoading || isGenerating) {
+    return <LoaderQuestionnaire />;
   }
 
   return (
