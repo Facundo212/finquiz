@@ -6,9 +6,10 @@ import Login from '@/containers/Login';
 import NotFound from '@/containers/NotFound';
 import Course from '@/containers/Course';
 import Questionnaire from '@/containers/questionnaire/index';
+import MyQuestionnaires from '@/containers/MyQuestionnaires';
 
 import RouteRestrictor from '@/hocs/RouteRestrictor';
-import MainLayout from './layouts/MainLayout';
+import MainLayout from '@/layouts/MainLayout';
 
 interface AppRoute {
   path: string;
@@ -27,6 +28,9 @@ const appRoutes: AppRoute[] = [
   },
   {
     path: '/questionnaires/:id', element: <Questionnaire />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
+  },
+  {
+    path: '/my-questionnaires', element: <MyQuestionnaires />, needAuth: true, allowedRoles: ['student'], useLayout: true,
   },
   {
     path: '*', element: <NotFound />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,

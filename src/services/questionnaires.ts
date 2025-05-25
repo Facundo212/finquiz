@@ -17,11 +17,25 @@ export interface ExtendedQuestion extends Question {
   generating: boolean;
 }
 
+export interface Unit {
+  id: number;
+  name: string;
+  description: string;
+  position: number;
+}
+
 export interface Questionnaire {
   id: number;
   name: string;
   questions: Question[];
   currentPosition: number;
+  createdAt: string;
+  result: number;
+  units: Unit[];
+}
+
+export interface QuestionnaireList {
+  data: Questionnaire[];
 }
 
 interface AnswerQuestionRequest {
@@ -38,6 +52,11 @@ export interface AnswerQuestionResponse {
 
 export const questionnaireApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    getQuestionnaires: builder.query<QuestionnaireList, void>({
+      query: () => ({
+        url: 'api/v1/questionnaires',
+      }),
+    }),
     getQuestionnaire: builder.query<Questionnaire, number>({
       query: (id) => ({
         url: `api/v1/questionnaires/${id}`,
@@ -76,7 +95,8 @@ export const questionnaireApi = api.injectEndpoints({
 });
 
 export const {
-  useAnswerQuestionMutation,
+  useGetQuestionnairesQuery,
   useGetQuestionnaireQuery,
   useGetQuestionQuery,
+  useAnswerQuestionMutation,
 } = questionnaireApi;
