@@ -7,10 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import EditUnitModal from '@/components/modals/editUnitModal';
 import { cn } from '@/lib/utils';
 
 import { RootState } from '@/reducers/store';
+import CreateTopicModal from './modals/createTopicModal';
+import EditTopicModal from './modals/editTopicModal';
 
 interface UnitCardProps {
   unit: {
@@ -20,6 +23,12 @@ interface UnitCardProps {
     position: number;
     maxPosition: number;
     courseId: string;
+    topics: {
+      id: number;
+      name: string;
+      description: string;
+      shortDescription: string;
+    }[];
   }
 }
 
@@ -51,11 +60,39 @@ function UnitCard({ unit }: UnitCardProps) {
       )}
     >
       {userIsTeacher && <EditUnitModal unit={unit} />}
-      <CardHeader className="h-70 p-6 grid-rows-6">
+      <CardHeader className={cn(
+        'p-6 flex flex-col',
+        'h-70',
+        'overflow-hidden',
+      )}>
         <CardTitle>{unit.name}</CardTitle>
-        <CardDescription className="line-clamp-8 overflow-hidden">
+        <CardDescription className="line-clamp-5 overflow-hidden text-ellipsis my-2">
           {unit.description}
         </CardDescription>
+        <div className="h-20 overflow-y-auto">
+          <div className="flex flex-wrap gap-2">
+            {userIsTeacher && (
+              <CreateTopicModal
+                courseId={unit.courseId}
+                unitId={unit.id.toString()}
+              />
+            )}
+            {unit.topics.map((topic) => (
+              userIsTeacher ? (
+                <EditTopicModal
+                  key={topic.id}
+                  courseId={unit.courseId}
+                  unitId={unit.id.toString()}
+                  topic={topic}
+                />
+              ) : (
+                <Badge key={topic.id} className="cursor-pointer text-black bg-[#F0B7A4]">
+                  {topic.name}
+                </Badge>
+              )
+            ))}
+          </div>
+        </div>
       </CardHeader>
     </Card>
   );

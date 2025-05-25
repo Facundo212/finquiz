@@ -15,6 +15,10 @@ interface Unit {
   name: string;
   description: string;
   position: number;
+  topics?: {
+    id: number;
+    name: string;
+  }[];
 }
 
 function Course() {
@@ -66,6 +70,7 @@ function Course() {
                 position: unit.position,
                 maxPosition,
                 courseId: data.course.id,
+                topics: unit.topics || [],
               }}
             />
           ))}

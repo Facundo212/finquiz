@@ -48,7 +48,7 @@ export const api = createApi({
         method: 'POST',
         body,
       }),
-      transformResponse: ({ meta, data: { data } }) => {
+      transformResponse: ({ meta, data }) => {
         const {
           accessToken,
           client,
@@ -127,11 +127,25 @@ export const api = createApi({
                 name: string;
                 description: string;
                 position: number;
+                topics: {
+                  id: number;
+                  name: string;
+                  description: string;
+                  shortDescription: string;
+                }[];
               }) => ({
                 id: unit.id,
                 name: unit.name,
                 description: unit.description,
                 position: unit.position,
+                topics: unit.topics.map(
+                  (topic: { id: number; name: string, description: string, shortDescription:string }) => ({
+                    id: topic.id,
+                    name: topic.name,
+                    description: topic.description,
+                    shortDescription: topic.shortDescription,
+                  }),
+                ),
               }),
             ),
           },
@@ -208,6 +222,71 @@ export const api = createApi({
         };
       },
     }),
+    createTopic: builder.mutation({
+      query: ({ courseId, unitId, body }: {
+        courseId: string;
+        unitId: string;
+        body: { name: string; description: string, short_description: string };
+      }) => ({
+        url: `api/v1/courses/${courseId}/units/${unitId}/topics`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al crear el tema'],
+        };
+      },
+    }),
+    updateTopic: builder.mutation({
+      query: ({
+        courseId, unitId, topicId, body,
+      }: {
+        courseId: string;
+        unitId: string;
+        topicId: string;
+        body: { name?: string; description?: string; short_description?: string };
+      }) => ({
+        url: `api/v1/courses/${courseId}/units/${unitId}/topics/${topicId}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al actualizar el tema'],
+        };
+      },
+    }),
+    deleteTopic: builder.mutation({
+      query: ({ courseId, unitId, topicId }: {
+        courseId: string;
+        unitId: string;
+        topicId: string;
+      }) => ({
+        url: `api/v1/courses/${courseId}/units/${unitId}/topics/${topicId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al eliminar el tema'],
+        };
+      },
+    }),
   }),
 });
 
@@ -218,4 +297,7 @@ export const {
   useCreateUnitMutation,
   useUpdateCourseMutation,
   useUpdateUnitMutation,
+  useCreateTopicMutation,
+  useUpdateTopicMutation,
+  useDeleteTopicMutation,
 } = api;
