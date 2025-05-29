@@ -48,7 +48,7 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       'react/react-in-jsx-scope': 'off',
-      'react/button-has-type': ['error', { allowAsProps: true }],
+      'react/require-default-props': 'off',
       'import/extensions': [
         'error',
         'ignorePackages',
@@ -74,5 +74,9 @@ export default tseslint.config(
   {
     files: ['src/reducers/**/*'],
     rules: { 'no-param-reassign': ['error', { props: false }] },
+  },
+  {
+    files: ['src/components/**/*', 'src/constants/**/*'],
+    rules: { 'import/prefer-default-export': 'off' },
   },
 )

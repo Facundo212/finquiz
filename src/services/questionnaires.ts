@@ -5,9 +5,10 @@ export interface Question {
   correct?: boolean | null;
 }
 
-interface QuestionOption {
+export interface QuestionOption {
   id: number;
   text: string;
+  correct: boolean;
 }
 
 export interface ExtendedQuestion extends Question {
@@ -15,6 +16,8 @@ export interface ExtendedQuestion extends Question {
   stem: string;
   options: QuestionOption[];
   generating: boolean;
+  explanation: string;
+  answeredOptionId: number;
 }
 
 export interface Unit {
@@ -48,6 +51,10 @@ export interface AnswerQuestionResponse {
   id: number;
   correct: boolean;
   explanation: string;
+}
+
+export interface QuestionnaireSummary extends Questionnaire {
+  questions: ExtendedQuestion[];
 }
 
 export const questionnaireApi = api.injectEndpoints({
@@ -91,6 +98,12 @@ export const questionnaireApi = api.injectEndpoints({
         );
       },
     }),
+    getQuestionnaireSummary: builder.query<QuestionnaireSummary, number>({
+      query: (id) => ({
+        url: `api/v1/questionnaires/${id}/summary`,
+      }),
+      transformResponse: ({ data }) => data,
+    }),
   }),
 });
 
@@ -99,4 +112,5 @@ export const {
   useGetQuestionnaireQuery,
   useGetQuestionQuery,
   useAnswerQuestionMutation,
+  useGetQuestionnaireSummaryQuery,
 } = questionnaireApi;

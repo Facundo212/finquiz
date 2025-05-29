@@ -4,16 +4,16 @@ import {
   PolarRadiusAxis,
   RadialBar,
   RadialBarChart,
-} from "recharts"
+} from 'recharts';
 
-import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 
 const chartConfig = {
   score: {
-    label: "Score",
-    color: "primary",
+    label: 'Score',
+    color: 'primary',
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 interface ScoreChartProps {
   score: number;
@@ -44,21 +44,21 @@ function ScoreChart({ score }: ScoreChartProps) {
           className="first:fill-muted last:fill-background"
           polarRadius={[50.59, 43.53]}
         />
-        <RadialBar 
-          dataKey="score" 
-          background 
+        <RadialBar
+          dataKey="score"
+          background
           cornerRadius={10}
           fill="var(--color-primary)"
         />
-        <PolarRadiusAxis 
-          tick={false} 
-          tickLine={false} 
+        <PolarRadiusAxis
+          tick={false}
+          tickLine={false}
           axisLine={false}
           domain={[0, 100]}
         >
           <Label
             content={({ viewBox }) => {
-              if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+              if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
                 return (
                   <text
                     x={viewBox.cx}
@@ -74,7 +74,7 @@ function ScoreChart({ score }: ScoreChartProps) {
                       {`${currentData[0].score}%`}
                     </tspan>
                   </text>
-                )
+                );
               }
               return null;
             }}
@@ -82,7 +82,7 @@ function ScoreChart({ score }: ScoreChartProps) {
         </PolarRadiusAxis>
       </RadialBarChart>
     </ChartContainer>
-  )
+  );
 }
 
 export default ScoreChart;

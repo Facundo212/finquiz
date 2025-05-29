@@ -37,7 +37,7 @@ function Navbar() {
 
   return (
     <nav className="flex items-center justify-between gap-3 p-6 py-0 h-15 bg-primary">
-      <span 
+      <span
         className="text-white font-bold text-xl cursor-pointer"
         onClick={() => navigate('/')}
       >

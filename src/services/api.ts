@@ -48,7 +48,7 @@ export const api = createApi({
         method: 'POST',
         body,
       }),
-      transformResponse: ({ meta, data }) => {
+      transformResponse: ({ meta, data: { data } }) => {
         const {
           accessToken,
           client,

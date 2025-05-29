@@ -26,10 +26,10 @@ function MyQuestionnaires() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {questionnaires?.data?.map((questionnaire) => (
-            <Card 
-              key={questionnaire.id} 
+            <Card
+              key={questionnaire.id}
               className="h-40 cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02]"
-              onClick={() => navigate(`/questionnaires/${questionnaire.id}`)}
+              onClick={() => navigate(`/questionnaires/${questionnaire.id}/summary`)}
             >
               <CardContent>
                 <div className="flex gap-6">
@@ -41,7 +41,7 @@ function MyQuestionnaires() {
                           <Badge className="bg-gray-200 text-black" key={unit.id}>{`Unidad ${unit.position}`}</Badge>
                         ))
                       ) : (
-                        <div className="h-[28px]"></div>
+                        <div className="h-[28px]" />
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">{questionnaire.createdAt}</p>

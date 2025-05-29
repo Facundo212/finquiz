@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { LoaderQuestionnaire } from '@/components/loaderQuestionnaire';
+import { ProgressCard } from '@/components/progressCard';
 
 import type { Questionnaire } from '@/services/questionnaires'; // TODO: Make all types be imported like this
 
 import { useGetQuestionnaireQuery, useAnswerQuestionMutation, useGetQuestionQuery } from '@/services/questionnaires';
 import { api } from '@/services/api';
 
-import ProgressCard from './components/progressCard';
-import QuestionCard from './components/questionCard';
+import QuestionSection from './components/questionSection';
 import CongratulationsCard from './components/congratulationsCard';
 
 function Questionnaire() {
@@ -83,12 +83,12 @@ function Questionnaire() {
         isFinished ? (
           <div className="flex flex-col items-center justify-center gap-4 h-full transition-all duration-500
             ease-in-out transform animate-in fade-in slide-in-from-top-4">
-            <CongratulationsCard />
+            <CongratulationsCard id={id} />
           </div>
         ) : (
           <div className="flex gap-12 py-8 transition-all duration-500">
             <ProgressCard questionnaire={questionnaireData!} />
-            <QuestionCard question={questionData!} advanceAction={advanceAction} answerQuestionAction={answerQuestionAction} />
+            <QuestionSection question={questionData!} advanceAction={advanceAction} answerQuestionAction={answerQuestionAction} />
           </div>
         )
       }

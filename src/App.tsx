@@ -5,8 +5,9 @@ import { Toaster } from 'sonner';
 import Login from '@/containers/Login';
 import NotFound from '@/containers/NotFound';
 import Course from '@/containers/Course';
-import Questionnaire from '@/containers/questionnaire/index';
 import MyQuestionnaires from '@/containers/MyQuestionnaires';
+import Questionnaire from '@/containers/questionnaire';
+import QuestionnaireSummary from '@/containers/QuestionnaireSummary';
 
 import RouteRestrictor from '@/hocs/RouteRestrictor';
 import MainLayout from '@/layouts/MainLayout';
@@ -31,6 +32,9 @@ const appRoutes: AppRoute[] = [
   },
   {
     path: '/my-questionnaires', element: <MyQuestionnaires />, needAuth: true, allowedRoles: ['student'], useLayout: true,
+  },
+  {
+    path: '/questionnaires/:id/summary', element: <QuestionnaireSummary />, needAuth: true, allowedRoles: ['student'], useLayout: true,
   },
   {
     path: '*', element: <NotFound />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,
