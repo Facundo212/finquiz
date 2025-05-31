@@ -36,28 +36,42 @@ function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-end gap-3 p-6 py-0 h-15 bg-primary">
-      <span className="text-white font-normal">{name}</span>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="cursor-pointer">
-            <AvatarFallback>
-              {name?.split(' ').map((n) => n[0]).join('').toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="m-6 my-0 w-48">
-          <DropdownMenuLabel className="font-light">{email}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer font-semibold"
-            onClick={handleLogout}
-            disabled={isLoading}
-          >
-            Salir
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <nav className="flex items-center justify-between gap-3 p-6 py-0 h-15 bg-primary">
+      <span 
+        className="text-white font-bold text-xl cursor-pointer"
+        onClick={() => navigate('/')}
+      >
+        FinQuiz
+      </span>
+      <div className="flex items-center gap-3">
+        <span className="text-white font-normal">{name}</span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="cursor-pointer">
+              <AvatarFallback>
+                {name?.split(' ').map((n) => n[0]).join('').toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="m-6 my-0 w-48">
+            <DropdownMenuLabel className="font-light">{email}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => navigate('/my-questionnaires')}
+            >
+              Mis cuestionarios
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer font-semibold"
+              onClick={handleLogout}
+              disabled={isLoading}
+            >
+              Salir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </nav>
   );
 }
