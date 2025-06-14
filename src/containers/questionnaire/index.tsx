@@ -7,7 +7,9 @@ import { ProgressCard } from '@/components/progressCard';
 
 import type { Questionnaire } from '@/services/questionnaires'; // TODO: Make all types be imported like this
 
-import { useGetQuestionnaireQuery, useAnswerQuestionMutation, useGetQuestionQuery } from '@/services/questionnaires';
+import {
+  useGetQuestionnaireQuery, useAnswerQuestionMutation, useGetQuestionQuery, useVoteQuestionMutation,
+} from '@/services/questionnaires';
 import { api } from '@/services/api';
 
 import QuestionSection from './components/questionSection';
@@ -69,6 +71,16 @@ function Questionnaire() {
     })
   );
 
+  const [voteQuestion] = useVoteQuestionMutation();
+
+  const voteQuestionAction = (questionId: number, action: 'up_vote' | 'report') => (
+    voteQuestion({
+      questionnaireId: id,
+      questionId,
+      action,
+    })
+  );
+
   if (questionnaireError || questionError) {
     return <div>Error</div>;
   }
@@ -88,7 +100,12 @@ function Questionnaire() {
         ) : (
           <div className="flex gap-12 py-8 transition-all duration-500">
             <ProgressCard questionnaire={questionnaireData!} />
-            <QuestionSection question={questionData!} advanceAction={advanceAction} answerQuestionAction={answerQuestionAction} />
+            <QuestionSection
+              question={questionData!}
+              advanceAction={advanceAction}
+              answerQuestionAction={answerQuestionAction}
+              voteQuestionAction={voteQuestionAction}
+            />
           </div>
         )
       }

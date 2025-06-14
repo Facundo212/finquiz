@@ -40,7 +40,7 @@ export const api = createApi({
       };
     },
   }),
-  tagTypes: ['Course'],
+  tagTypes: ['Course', 'Questionnaire', 'Question'],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (body) => ({
