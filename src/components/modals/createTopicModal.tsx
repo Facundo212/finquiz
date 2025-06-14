@@ -36,7 +36,7 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
     }
   }, [error]);
 
-  const handleSubmit = async (data: { name: string; description: string, shortDescription: string }) => {
+  const handleSubmit = async (data: { name: string; description: string, shortDescription: string, notes: string }) => {
     await createTopic({
       courseId,
       unitId,
@@ -44,6 +44,7 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
         name: data.name,
         description: data.description,
         short_description: data.shortDescription,
+        notes: data.notes,
       },
     });
   };

@@ -55,11 +55,9 @@ export const api = createApi({
           uid,
           expiry,
         } = meta || {};
-
         const {
           name, nickname, email, role, selected_course_id: selectedCourseId,
         } = data || {};
-
         localStorage.setItem('accessToken', accessToken || '');
         localStorage.setItem('client', client || '');
         localStorage.setItem('uid', uid || '');
@@ -69,7 +67,6 @@ export const api = createApi({
         localStorage.setItem('nickname', nickname || '');
         localStorage.setItem('role', role || '');
         localStorage.setItem('selectedCourseId', selectedCourseId || '');
-
         return {
           ...meta,
           user: {
@@ -132,6 +129,7 @@ export const api = createApi({
                   name: string;
                   description: string;
                   shortDescription: string;
+                  notes: string | null | undefined;
                 }[];
               }) => ({
                 id: unit.id,
@@ -139,11 +137,12 @@ export const api = createApi({
                 description: unit.description,
                 position: unit.position,
                 topics: unit.topics.map(
-                  (topic: { id: number; name: string, description: string, shortDescription:string }) => ({
+                  (topic: { id: number; name: string, description: string, shortDescription: string, notes?: string | null }) => ({
                     id: topic.id,
                     name: topic.name,
                     description: topic.description,
                     shortDescription: topic.shortDescription,
+                    notes: topic.notes ?? '',
                   }),
                 ),
               }),
@@ -226,7 +225,7 @@ export const api = createApi({
       query: ({ courseId, unitId, body }: {
         courseId: string;
         unitId: string;
-        body: { name: string; description: string, short_description: string };
+        body: { name: string; description: string, short_description: string, notes?: string };
       }) => ({
         url: `api/v1/courses/${courseId}/units/${unitId}/topics`,
         method: 'POST',
@@ -250,7 +249,7 @@ export const api = createApi({
         courseId: string;
         unitId: string;
         topicId: string;
-        body: { name?: string; description?: string; short_description?: string };
+        body: { name?: string; description?: string; short_description?: string, notes?: string };
       }) => ({
         url: `api/v1/courses/${courseId}/units/${unitId}/topics/${topicId}`,
         method: 'PUT',

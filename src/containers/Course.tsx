@@ -1,7 +1,10 @@
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { toast } from 'sonner';
 
 import { Spinner } from '@/components/ui/spinner';
+import { Button } from '@/components/ui/button';
 import CourseHero from '@/components/courseHero';
 import UnitCard from '@/components/unitCard';
 import CreateUnitModal from '@/components/modals/createUnitModal';
@@ -9,6 +12,7 @@ import CreateUnitModal from '@/components/modals/createUnitModal';
 import { RootState } from '@/reducers/store';
 
 import { useCourseInfoQuery } from '@/services/api';
+import { useCreateQuestionnaireMutation } from '@/services/questionnaires';
 
 interface Unit {
   id: number;
@@ -18,13 +22,28 @@ interface Unit {
   topics?: {
     id: number;
     name: string;
+    description: string;
+    shortDescription: string;
+    notes?: string;
   }[];
 }
 
 function Course() {
+  const navigate = useNavigate();
+  const [createQuestionnaire, { isLoading: isCreating }] = useCreateQuestionnaireMutation();
+  const [selectedUnits, setSelectedUnits] = useState<number[]>([]);
   const { courseId } = useParams();
   const { data, isLoading, isError } = useCourseInfoQuery({ courseId: courseId ?? '' });
   const { user: { role } } = useSelector((state: RootState) => state.session);
+
+  const handleCreateQuestionnaire = async () => {
+    try {
+      const result = await createQuestionnaire({ unit_ids: selectedUnits }).unwrap();
+      navigate(`/questionnaires/${result.id}`);
+    } catch {
+      toast.error('Error al crear el cuestionario. Por favor, inténtalo de nuevo.');
+    }
+  };
 
   if (isError) {
     return (
@@ -71,6 +90,12 @@ function Course() {
                 maxPosition,
                 courseId: data.course.id,
                 topics: unit.topics || [],
+                selected: selectedUnits.includes(unit.id),
+                onSelect: () => {
+                  setSelectedUnits((prev: number[]) => (prev.includes(unit.id)
+                    ? prev.filter((id) => id !== unit.id)
+                    : [...prev, unit.id]));
+                },
               }}
             />
           ))}
@@ -81,6 +106,18 @@ function Course() {
             />
           )}
         </div>
+        {role === 'student' && (
+          <div className="flex justify-center mt-8">
+            <Button
+              size="lg"
+              className="px-8 py-3"
+              disabled={selectedUnits.length === 0 || isCreating}
+              onClick={handleCreateQuestionnaire}
+            >
+              {isCreating ? 'Creando...' : 'Crear cuestionario'}
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );

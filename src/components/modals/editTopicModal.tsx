@@ -17,6 +17,7 @@ interface EditUnitsProps {
     name: string;
     description: string;
     shortDescription: string;
+    notes: string;
   }
 }
 
@@ -79,7 +80,7 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
     });
   };
 
-  const handleSubmit = async (data: { name: string; description: string, shortDescription: string }) => {
+  const handleSubmit = async (data: { name: string; description: string, shortDescription: string, notes: string }) => {
     await updateTopic({
       courseId,
       unitId,
@@ -88,6 +89,7 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
         name: data.name,
         description: data.description,
         short_description: data.shortDescription,
+        notes: data.notes,
       },
     });
   };
@@ -97,7 +99,7 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
       open={isDialogOpen}
       onOpenChange={setIsDialogOpen}
       trigger={(
-        <Badge key={topic.id} className="cursor-pointer text-black bg-[#F0B7A4] hover:bg-[#E8A088]">
+        <Badge key={topic.id} variant="defaultTopic">
           {topic.name}
         </Badge>
       )}
@@ -111,6 +113,7 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
           name: topic.name,
           description: topic.description,
           shortDescription: topic.shortDescription,
+          notes: topic.notes,
         }}
         submitButtonText="Actualizar"
         secondaryAction={(

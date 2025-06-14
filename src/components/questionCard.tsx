@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/accordion';
 import { Card, CardContent } from '@/components/ui/card';
 import { OptionButton } from '@/components/optionButton';
+import { Badge } from '@/components/ui/badge';
 
 import { ExtendedQuestion } from '@/services/questionnaires';
 
@@ -62,6 +63,12 @@ function QuestionCard({
     <div className="flex flex-col gap-6 grow">
       <Card>
         <CardContent>
+          <div className="flex justify-between items-start mb-4">
+            <div />
+            <Badge variant="defaultTopic">
+              {question.topic.name}
+            </Badge>
+          </div>
           <Markdown components={{ code: stemCode, p: stemParagraph }}>{question.stem}</Markdown>
         </CardContent>
       </Card>
