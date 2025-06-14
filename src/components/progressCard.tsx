@@ -13,8 +13,10 @@ function ProgressCard({
     questions,
     currentPosition,
   },
-}: {
+  hideProgress = false,
+} : {
   questionnaire: Questionnaire;
+  hideProgress?: boolean;
 }) {
   const questionStatusColors = useMemo(() => questions.map((question, index) => {
     if (question.correct === true) return 'bg-green-700';
@@ -33,9 +35,11 @@ function ProgressCard({
     <Card className="w-3/12 min-w-3/12 h-fit">
       <CardHeader>
         <CardTitle className="text-2xl">{name}</CardTitle>
-        <CardDescription>
-          <Progress value={progress} className="h-4" />
-        </CardDescription>
+        {!hideProgress && (
+          <CardDescription>
+            <Progress value={progress} className="h-4" />
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         {questions.map((question, index) => (
@@ -53,4 +57,4 @@ function ProgressCard({
   );
 }
 
-export default ProgressCard;
+export { ProgressCard };
