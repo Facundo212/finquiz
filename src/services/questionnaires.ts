@@ -1,5 +1,11 @@
 import { api } from './api';
 
+export interface Topic {
+  id: number;
+  name: string;
+  shortDescription: string;
+}
+
 export interface Question {
   id: number;
   correct?: boolean | null;
@@ -18,6 +24,7 @@ export interface ExtendedQuestion extends Question {
   generating: boolean;
   explanation: string;
   answeredOptionId: number;
+  topic: Topic;
 }
 
 export interface Unit {
@@ -57,8 +64,26 @@ export interface QuestionnaireSummary extends Questionnaire {
   questions: ExtendedQuestion[];
 }
 
+interface CreateQuestionnaireRequest {
+  unit_ids: number[];
+}
+
+export interface StudentStats {
+  questionnairesCount: number;
+  successTopics: Topic[];
+  failureTopics: Topic[];
+}
+
 export const questionnaireApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    createQuestionnaire: builder.mutation<Questionnaire, CreateQuestionnaireRequest>({
+      query: ({ unit_ids }) => ({
+        url: 'api/v1/questionnaires',
+        method: 'POST',
+        body: { unit_ids },
+      }),
+      transformResponse: ({ data }) => data,
+    }),
     getQuestionnaires: builder.query<QuestionnaireList, void>({
       query: () => ({
         url: 'api/v1/questionnaires',
@@ -67,6 +92,12 @@ export const questionnaireApi = api.injectEndpoints({
     getQuestionnaire: builder.query<Questionnaire, number>({
       query: (id) => ({
         url: `api/v1/questionnaires/${id}`,
+      }),
+      transformResponse: ({ data }) => data,
+    }),
+    getStudentStats: builder.query<StudentStats, void>({
+      query: () => ({
+        url: 'api/v1/users/stats',
       }),
       transformResponse: ({ data }) => data,
     }),
@@ -108,9 +139,11 @@ export const questionnaireApi = api.injectEndpoints({
 });
 
 export const {
+  useCreateQuestionnaireMutation,
   useGetQuestionnairesQuery,
   useGetQuestionnaireQuery,
   useGetQuestionQuery,
   useAnswerQuestionMutation,
   useGetQuestionnaireSummaryQuery,
+  useGetStudentStatsQuery,
 } = questionnaireApi;

@@ -18,6 +18,7 @@ const formSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
   description: z.string().min(1, 'La descripción es requerida'),
   shortDescription: z.string().min(1, 'La descripción corta es requerida'),
+  notes: z.string().default(''),
 });
 
 interface TopicFormProps {
@@ -27,6 +28,7 @@ interface TopicFormProps {
     name?: string;
     description?: string;
     shortDescription?: string;
+    notes?: string;
   };
   submitButtonText?: string;
   secondaryAction?: React.ReactNode;
@@ -45,6 +47,7 @@ function TopicForm({
       name: initialValues.name || '',
       description: initialValues.description || '',
       shortDescription: initialValues.shortDescription || '',
+      notes: initialValues.notes || '',
     },
   });
 
@@ -81,7 +84,7 @@ function TopicForm({
                 <FormControl>
                   <Textarea
                     placeholder="Ingrese una descripción breve del tema, esta descripción sera vista por los estudiantes"
-                    className="min-h-[100px]"
+                    className="h-[100px] resize-none overflow-y-auto"
                     {...field}
                   />
                 </FormControl>
@@ -99,7 +102,25 @@ function TopicForm({
                 <FormControl>
                   <Textarea
                     placeholder="Ingrese la descripción del tema, esta descripción sera utilizada para la generación de preguntas"
-                    className="min-h-[100px]"
+                    className="h-[100px] resize-none overflow-y-auto"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Notas</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Las notas aqui escritas seran utilizadas para guiar la generación de preguntas, pero no serán vistas por los estudiantes"
+                    className="h-[100px] resize-none overflow-y-auto"
                     {...field}
                   />
                 </FormControl>

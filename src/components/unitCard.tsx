@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -9,6 +8,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import EditUnitModal from '@/components/modals/editUnitModal';
+import UnitInfoModal from '@/components/modals/unitInfoModal';
 import { cn } from '@/lib/utils';
 
 import { RootState } from '@/reducers/store';
@@ -28,21 +28,33 @@ interface UnitCardProps {
       name: string;
       description: string;
       shortDescription: string;
+      notes?: string;
     }[];
+    selected: boolean;
+    onSelect: () => void;
   }
 }
 
 function UnitCard({ unit }: UnitCardProps) {
-  const [isSelected, setIsSelected] = useState(false);
-
   const { user: { role } } = useSelector((state: RootState) => state.session);
 
   const userIsStudent = role === 'student';
   const userIsTeacher = role === 'teacher';
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    // Check if the click is on the info button, dialog close button, overlay, or their children
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('[data-info-button]')
+      || target.closest('[data-slot="dialog-close"]')
+      || target.closest('[data-slot="dialog-content"]')
+      || target.closest('[data-slot="dialog-overlay"]')
+    ) {
+      return; // Don't select the unit if clicking modal-related elements
+    }
+
     if (userIsStudent) {
-      setIsSelected(!isSelected);
+      unit.onSelect();
     }
   };
 
@@ -53,13 +65,14 @@ function UnitCard({ unit }: UnitCardProps) {
       className={cn(
         'flex flex-col transition-colors duration-200 relative',
         userIsStudent ? 'cursor-pointer hover:bg-muted/50' : '',
-        isSelected
+        unit.selected
           ? 'border-primary shadow-[0_0_5px_0] shadow-primary'
           : 'border-primary-foreground'
         ,
       )}
     >
       {userIsTeacher && <EditUnitModal unit={unit} />}
+      {userIsStudent && <UnitInfoModal unit={unit} />}
       <CardHeader className={cn(
         'p-6 flex flex-col',
         'h-70',
@@ -86,7 +99,7 @@ function UnitCard({ unit }: UnitCardProps) {
                   topic={topic}
                 />
               ) : (
-                <Badge key={topic.id} className="cursor-pointer text-black bg-[#F0B7A4]">
+                <Badge key={topic.id} variant="defaultTopic">
                   {topic.name}
                 </Badge>
               )

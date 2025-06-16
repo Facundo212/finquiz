@@ -5,14 +5,17 @@ import Loader from '@/components/loader';
 import { Badge } from '@/components/ui/badge';
 import ScoreChart from '@/components/scoreChart';
 
-import { useGetQuestionnairesQuery } from '@/services/questionnaires';
+import StudentStats from '@/components/studentStats';
+
+import { useGetQuestionnairesQuery, useGetStudentStatsQuery } from '@/services/questionnaires';
 
 function MyQuestionnaires() {
   const navigate = useNavigate();
 
+  const { data: stats, isLoading: statsLoading } = useGetStudentStatsQuery();
   const { data: questionnaires, isLoading: isQuestionnairesLoading } = useGetQuestionnairesQuery();
 
-  if (isQuestionnairesLoading) {
+  if (isQuestionnairesLoading || statsLoading) {
     return (
       <Loader />
     );
@@ -21,6 +24,11 @@ function MyQuestionnaires() {
   return (
     <div className="container mx-auto py-10 px-4">
       <h1 className="text-4xl font-bold text-foreground mb-8">Mis cuestionarios</h1>
+      <div className="mb-8">
+        <StudentStats
+          stats={stats}
+        />
+      </div>
       {questionnaires?.data?.length === 0 ? (
         <h2 className="text-lg">Aquí podrás ver tus cuestionarios finalizados, ordenados por fecha</h2>
       ) : (
