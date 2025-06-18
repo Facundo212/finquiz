@@ -9,6 +9,7 @@ export interface Topic {
 export interface Question {
   id: number;
   correct?: boolean | null;
+  score: number;
 }
 
 export interface QuestionOption {
@@ -25,6 +26,7 @@ export interface ExtendedQuestion extends Question {
   explanation: string;
   answeredOptionId: number;
   topic: Topic;
+  score: number;
 }
 
 export interface Unit {
@@ -93,6 +95,7 @@ export const questionnaireApi = api.injectEndpoints({
       query: (id) => ({
         url: `api/v1/questionnaires/${id}`,
       }),
+      providesTags: (_, __, id) => [{ type: 'Questionnaire', id }],
       transformResponse: ({ data }) => data,
     }),
     getStudentStats: builder.query<StudentStats, void>({
@@ -105,6 +108,7 @@ export const questionnaireApi = api.injectEndpoints({
       query: ({ questionnaireId, questionId }) => ({
         url: `api/v1/questionnaires/${questionnaireId}/questions/${questionId}`,
       }),
+      providesTags: (_, __, { questionId }) => [{ type: 'Question', id: questionId }],
       transformResponse: ({ data }) => data,
     }),
     answerQuestion: builder.mutation<AnswerQuestionResponse, AnswerQuestionRequest>({
@@ -135,6 +139,17 @@ export const questionnaireApi = api.injectEndpoints({
       }),
       transformResponse: ({ data }) => data,
     }),
+    voteQuestion: builder.mutation<ExtendedQuestion, { questionnaireId: number, questionId: number, action: 'up_vote' | 'report' }>({
+      query: ({ questionnaireId, questionId, action }) => ({
+        url: `api/v1/questionnaires/${questionnaireId}/questions/${questionId}/vote`,
+        method: 'POST',
+        body: { vote_action: action },
+      }),
+      transformResponse: ({ data }) => data,
+      invalidatesTags: (_, __, { questionnaireId, questionId, action }) => (action === 'report'
+        ? [{ type: 'Question', id: questionId }, { type: 'Questionnaire', id: questionnaireId }]
+        : [{ type: 'Question', id: questionId }]),
+    }),
   }),
 });
 
@@ -146,4 +161,5 @@ export const {
   useAnswerQuestionMutation,
   useGetQuestionnaireSummaryQuery,
   useGetStudentStatsQuery,
+  useVoteQuestionMutation,
 } = questionnaireApi;

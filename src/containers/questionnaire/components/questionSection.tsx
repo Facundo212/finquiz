@@ -12,10 +12,12 @@ function QuestionSection({
   question,
   advanceAction,
   answerQuestionAction,
+  voteQuestionAction,
 }: {
   question: ExtendedQuestion;
   advanceAction: () => void;
   answerQuestionAction: (optionId: number) => Promise<{ data: AnswerQuestionResponse } | { error: FetchBaseQueryError | SerializedError }>;
+  voteQuestionAction: (questionId: number, action: 'up_vote' | 'report') => Promise<{ data: ExtendedQuestion } | { error: FetchBaseQueryError | SerializedError }>;
 }) {
   const [isCorrect, setIsCorrect] = useState<Record<number, boolean>>({});
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
@@ -42,6 +44,20 @@ function QuestionSection({
     setExplanation('');
   };
 
+  const handleVoteQuestion = (questionId: number, action: 'up_vote' | 'report') => {
+    voteQuestionAction(questionId, action)
+      .then((res) => {
+        if ('data' in res) {
+          if (res.data?.score > 0) {
+            toast.info('La pregunta ha sido valorada positivamente');
+          } else {
+            toast.info('La pregunta ha sido reportada correctamente');
+            handleAdvance();
+          }
+        }
+      });
+  };
+
   useEffect(() => {
     if (!isAnswered) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -59,9 +75,25 @@ function QuestionSection({
       />
 
       <div className="flex items-center justify-between">
-        <Button variant="destructive" className="w-min px-12 py-6">
-          Reportar
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="destructive"
+            className="w-min px-12 py-6"
+            onClick={() => handleVoteQuestion(question.id, 'report')}
+            disabled={!!question.score}
+          >
+            Reportar pregunta
+          </Button>
+
+          <Button
+            variant="positive"
+            className="w-min px-12 py-6"
+            onClick={() => handleVoteQuestion(question.id, 'up_vote')}
+            disabled={!!question.score}
+          >
+            Buena pregunta
+          </Button>
+        </div>
 
         <Button className="w-min px-12 py-6" onClick={handleAdvance} disabled={!isAnswered}>
           Siguiente

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Check, X } from 'lucide-react';
+import Markdown from 'react-markdown';
 
 import { cn } from '@/lib/utils';
 import { QuestionOption } from '@/services/questionnaires';
@@ -51,7 +52,9 @@ function OptionButton({
             <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center text-3xl font-bold">
               {optionLetter}
             </div>
-            <p className="flex-1">{option.text}</p>
+            <div className="whitespace-pre-line">
+              <Markdown>{option.text}</Markdown>
+            </div>
             {answerStatusIcon}
           </div>
         </CardContent>

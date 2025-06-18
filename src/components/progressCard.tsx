@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 import { Questionnaire } from '@/services/questionnaires';
 import { Progress } from '@/components/ui/progress';
@@ -19,6 +20,7 @@ function ProgressCard({
   hideProgress?: boolean;
 }) {
   const questionStatusColors = useMemo(() => questions.map((question, index) => {
+    if (question.score < 0) return 'bg-gray-600';
     if (question.correct === true) return 'bg-green-700';
     if (question.correct === false) return 'bg-red-500';
     if (question.correct === null && index < currentPosition) return 'bg-yellow-500';
@@ -45,11 +47,17 @@ function ProgressCard({
         {questions.map((question, index) => (
           <div key={question.id} className="flex items-center gap-3">
             <div className={`w-5 h-5 rounded-full border-2 ${questionStatusColors[index]} transition-all duration-500`} />
-            <p className={`${index === currentPosition ? 'font-medium' : 'font-light'}`}>
+            <p className={cn(
+              index === currentPosition ? 'font-medium underline' : 'font-light',
+              question.score < 0 ? 'line-through' : '',
+            )}>
               Pregunta
               {' '}
               {index + 1}
             </p>
+            {question.score < 0 && (
+              <p>🚩</p>
+            )}
           </div>
         ))}
       </CardContent>
