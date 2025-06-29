@@ -8,6 +8,7 @@ import Course from '@/containers/Course';
 import MyQuestionnaires from '@/containers/MyQuestionnaires';
 import Questionnaire from '@/containers/questionnaire';
 import QuestionnaireSummary from '@/containers/QuestionnaireSummary';
+import Reports from '@/containers/Reports';
 
 import RouteRestrictor from '@/hocs/RouteRestrictor';
 import MainLayout from '@/layouts/MainLayout';
@@ -35,6 +36,9 @@ const appRoutes: AppRoute[] = [
   },
   {
     path: '/questionnaires/:id/summary', element: <QuestionnaireSummary />, needAuth: true, allowedRoles: ['student'], useLayout: true,
+  },
+  {
+    path: '/courses/:courseId/reports', element: <Reports />, needAuth: true, allowedRoles: ['teacher'], useLayout: true,
   },
   {
     path: '*', element: <NotFound />, needAuth: true, allowedRoles: ['student', 'teacher'], useLayout: true,

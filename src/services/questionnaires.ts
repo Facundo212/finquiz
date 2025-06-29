@@ -42,6 +42,7 @@ export interface Questionnaire {
   questions: Question[];
   currentPosition: number;
   createdAt: string;
+  isCompleted: boolean;
   result: number;
   units: Unit[];
 }
