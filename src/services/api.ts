@@ -306,6 +306,26 @@ export const api = createApi({
         };
       },
     }),
+    questionsCSV: builder.query({
+      query: ({ courseId }: { courseId: string }) => ({
+        url: `api/v1/courses/${courseId}/questions_csv.csv`,
+        method: 'GET',
+        headers: {
+          Accept: 'text/csv',
+        },
+        responseHandler: 'text',
+      }),
+      transformResponse: (response) => response,
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al descargar el CSV'],
+        };
+      },
+    }),
   }),
 });
 
@@ -320,4 +340,6 @@ export const {
   useUpdateTopicMutation,
   useDeleteTopicMutation,
   useCourseReportsQuery,
+  useQuestionsCSVQuery,
+  useLazyQuestionsCSVQuery,
 } = api;
