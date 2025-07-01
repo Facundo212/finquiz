@@ -6,7 +6,16 @@ import BaseModal from '@/components/modals/baseModal';
 import TopicForm from '@/components/forms/topicForm';
 import { Badge } from '@/components/ui/badge';
 
-import { useCreateTopicMutation } from '@/services/api';
+import { useCreateTopicMutation, useCourseInfoQuery } from '@/services/api';
+
+interface Topic {
+  id: number;
+  name: string;
+  description: string;
+  shortDescription: string;
+  notes?: string;
+  prerequisiteTopicIds?: number[];
+}
 
 interface CreateUnitsProps {
   courseId: string;
@@ -16,6 +25,9 @@ interface CreateUnitsProps {
 function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [createTopic, { isLoading, isSuccess, error }] = useCreateTopicMutation();
+  const { data: courseData } = useCourseInfoQuery({ courseId });
+
+  const allTopics: Topic[] = courseData?.course?.units?.reduce((acc: Topic[], unit: { topics: Topic[] }) => [...acc, ...unit.topics], []) || [];
 
   useEffect(() => {
     if (isSuccess) {
@@ -36,15 +48,24 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
     }
   }, [error]);
 
-  const handleSubmit = async (data: { name: string; description: string, shortDescription: string, notes: string }) => {
+  const handleSubmit = async (data: {
+    name: string;
+    description: string,
+    shortDescription: string,
+    notes: string,
+    prerequisiteTopics: Topic[]
+  }) => {
     await createTopic({
       courseId,
       unitId,
       body: {
-        name: data.name,
-        description: data.description,
-        short_description: data.shortDescription,
-        notes: data.notes,
+        topic: {
+          name: data.name,
+          description: data.description,
+          short_description: data.shortDescription,
+          notes: data.notes,
+          prerequisite_topic_ids: data.prerequisiteTopics.map((topic) => topic.id),
+        },
       },
     });
   };
@@ -68,6 +89,7 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
         onSubmit={handleSubmit}
         isLoading={isLoading}
         submitButtonText="Agregar"
+        allTopics={allTopics}
       />
     </BaseModal>
   );

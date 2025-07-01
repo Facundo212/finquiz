@@ -7,21 +7,28 @@ import TopicForm from '@/components/forms/topicForm';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-import { useUpdateTopicMutation, useDeleteTopicMutation } from '@/services/api';
+import { useUpdateTopicMutation, useDeleteTopicMutation, useCourseInfoQuery } from '@/services/api';
+
+interface Topic {
+  id: number;
+  name: string;
+  description: string;
+  shortDescription: string;
+  notes?: string;
+  prerequisiteTopicIds?: number[];
+}
 
 interface EditUnitsProps {
   courseId: string;
   unitId: string;
-  topic: {
-    id: number;
-    name: string;
-    description: string;
-    shortDescription: string;
-    notes: string;
-  }
+  topic: Topic;
 }
 
-function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
+function EditTopicModal({
+  courseId,
+  unitId,
+  topic,
+}: EditUnitsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [updateTopic, {
     isLoading: isLoadingUpdate,
@@ -33,6 +40,11 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
     isSuccess: isSuccessDelete,
     error: errorDelete,
   }] = useDeleteTopicMutation();
+
+  const { data: courseData } = useCourseInfoQuery({ courseId });
+
+  // Flatten all topics from all units
+  const allTopics: Topic[] = courseData?.course?.units?.reduce((acc: Topic[], unit: { topics: Topic[] }) => [...acc, ...unit.topics], []) || [];
 
   useEffect(() => {
     if (isSuccessUpdate) {
@@ -80,16 +92,25 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
     });
   };
 
-  const handleSubmit = async (data: { name: string; description: string, shortDescription: string, notes: string }) => {
+  const handleSubmit = async (data: {
+    name: string;
+    description: string,
+    shortDescription: string,
+    notes: string,
+    prerequisiteTopics: Topic[]
+  }) => {
     await updateTopic({
       courseId,
       unitId,
       topicId: topic.id.toString(),
       body: {
-        name: data.name,
-        description: data.description,
-        short_description: data.shortDescription,
-        notes: data.notes,
+        topic: {
+          name: data.name,
+          description: data.description,
+          short_description: data.shortDescription,
+          notes: data.notes,
+          prerequisite_topic_ids: data.prerequisiteTopics.map((prereqTopic) => prereqTopic.id),
+        },
       },
     });
   };
@@ -99,7 +120,7 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
       open={isDialogOpen}
       onOpenChange={setIsDialogOpen}
       trigger={(
-        <Badge key={topic.id} variant="defaultTopic">
+        <Badge key={topic.id} variant="defaultTopic" className="break-words max-w-full">
           {topic.name}
         </Badge>
       )}
@@ -114,6 +135,7 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
           description: topic.description,
           shortDescription: topic.shortDescription,
           notes: topic.notes,
+          prerequisiteTopicIds: topic.prerequisiteTopicIds || [],
         }}
         submitButtonText="Actualizar"
         secondaryAction={(
@@ -125,6 +147,8 @@ function EditTopicModal({ courseId, unitId, topic }: EditUnitsProps) {
             Eliminar Tema
           </Button>
         )}
+        allTopics={allTopics}
+        currentTopicId={topic.id}
       />
     </BaseModal>
   );

@@ -25,7 +25,7 @@ function BaseModal({
   title,
   description,
   children,
-  className = 'sm:max-w-[600px]',
+  className = 'sm:max-w-[600px] max-h-[90vh] overflow-hidden',
 }: BaseModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -39,7 +39,9 @@ function BaseModal({
             </DialogDescription>
           )}
         </DialogHeader>
-        {children}
+        <div className="overflow-y-auto max-h-[calc(90vh-8rem)] pr-2">
+          {children}
+        </div>
       </DialogContent>
     </Dialog>
   );
@@ -48,7 +50,7 @@ function BaseModal({
 BaseModal.defaultProps = {
   trigger: undefined,
   description: undefined,
-  className: 'sm:max-w-[600px]',
+  className: 'sm:max-w-[600px] max-h-[90vh] overflow-hidden',
 };
 
 export default BaseModal;

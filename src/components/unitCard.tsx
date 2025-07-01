@@ -29,6 +29,7 @@ interface UnitCardProps {
       description: string;
       shortDescription: string;
       notes?: string;
+      prerequisiteTopicIds?: number[];
     }[];
     selected: boolean;
     onSelect: () => void;
@@ -63,7 +64,7 @@ function UnitCard({ unit }: UnitCardProps) {
       key={unit.id}
       onClick={handleClick}
       className={cn(
-        'flex flex-col transition-colors duration-200 relative',
+        'flex flex-col transition-colors duration-200 relative h-80',
         userIsStudent ? 'cursor-pointer hover:bg-muted/50' : '',
         unit.selected
           ? 'border-primary shadow-[0_0_5px_0] shadow-primary'
@@ -74,16 +75,17 @@ function UnitCard({ unit }: UnitCardProps) {
       {userIsTeacher && <EditUnitModal unit={unit} />}
       {userIsStudent && <UnitInfoModal unit={unit} />}
       <CardHeader className={cn(
-        'p-6 flex flex-col',
-        'h-70',
+        'p-6 flex flex-col h-full relative',
         'overflow-hidden',
       )}>
-        <CardTitle>{unit.name}</CardTitle>
-        <CardDescription className="line-clamp-5 overflow-hidden text-ellipsis my-2">
-          {unit.description}
-        </CardDescription>
-        <div className="h-20 overflow-y-auto">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex-grow pb-24">
+          <CardTitle>{unit.name}</CardTitle>
+          <CardDescription className="line-clamp-5 overflow-hidden text-ellipsis my-2">
+            {unit.description}
+          </CardDescription>
+        </div>
+        <div className="absolute bottom-6 left-6 right-6">
+          <div className="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
             {userIsTeacher && (
               <CreateTopicModal
                 courseId={unit.courseId}
@@ -99,7 +101,7 @@ function UnitCard({ unit }: UnitCardProps) {
                   topic={topic}
                 />
               ) : (
-                <Badge key={topic.id} variant="defaultTopic">
+                <Badge key={topic.id} variant="defaultTopic" className="break-words max-w-full">
                   {topic.name}
                 </Badge>
               )
