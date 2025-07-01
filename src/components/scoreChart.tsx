@@ -11,16 +11,17 @@ import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 const chartConfig = {
   score: {
     label: 'Score',
-    color: 'primary',
   },
 } satisfies ChartConfig;
 
 interface ScoreChartProps {
   score: number;
+  color?: string;
 }
 
-function ScoreChart({ score }: ScoreChartProps) {
+function ScoreChart({ score, color }: ScoreChartProps) {
   const currentData = [{ score }];
+  const fill = color ? `var(--${color})` : 'var(--color-primary)';
 
   return (
     <ChartContainer
@@ -48,7 +49,7 @@ function ScoreChart({ score }: ScoreChartProps) {
           dataKey="score"
           background
           cornerRadius={10}
-          fill="var(--color-primary)"
+          fill={fill}
         />
         <PolarRadiusAxis
           tick={false}

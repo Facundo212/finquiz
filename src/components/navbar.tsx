@@ -18,7 +18,11 @@ import { RootState } from '@/reducers/store';
 function Navbar() {
   const [logout, { isLoading, isSuccess }] = useLogoutMutation();
 
-  const { user: { name, email } } = useSelector((state: RootState) => state.session);
+  const {
+    user: {
+      name, email, role, selectedCourseId,
+    },
+  } = useSelector((state: RootState) => state.session);
 
   const navigate = useNavigate();
 
@@ -37,12 +41,18 @@ function Navbar() {
 
   return (
     <nav className="flex items-center justify-between gap-3 p-6 py-0 h-15 bg-primary">
-      <span
-        className="text-white font-bold text-xl cursor-pointer"
+      <button
+        type="button"
         onClick={() => navigate('/')}
+        className="
+          text-white font-bold text-xl bg-transparent
+          border-none p-0 cursor-pointer hover:opacity-80
+          focus:outline-none focus:ring-2 focus:ring-offset-2
+          focus:ring-offset-primary focus:ring-white
+        "
       >
         FinQuiz
-      </span>
+      </button>
       <div className="flex items-center gap-3">
         <span className="text-white font-normal">{name}</span>
         <DropdownMenu>
@@ -56,12 +66,22 @@ function Navbar() {
           <DropdownMenuContent className="m-6 my-0 w-48">
             <DropdownMenuLabel className="font-light">{email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => navigate('/my-questionnaires')}
-            >
-              Mis cuestionarios
-            </DropdownMenuItem>
+            {role === 'student' && (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => navigate('/my-questionnaires')}
+              >
+                Mis cuestionarios
+              </DropdownMenuItem>
+            )}
+            {role === 'teacher' && (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => navigate(`/courses/${selectedCourseId}/reports`)}
+              >
+                Reportes
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               className="cursor-pointer font-semibold"
               onClick={handleLogout}

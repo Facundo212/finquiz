@@ -286,6 +286,26 @@ export const api = createApi({
         };
       },
     }),
+    courseReports: builder.query({
+      query: ({ courseId, page = 1 }: { courseId: string; page?: number }) => ({
+        url: `api/v1/courses/${courseId}/reports`,
+        method: 'GET',
+        params: {
+          page,
+        },
+      }),
+      providesTags: (_, __, { courseId }) => [{ type: 'Course', id: courseId }],
+      transformResponse: ({ data }) => data,
+      transformErrorResponse: (error: ErrorResponse): { status: number; data: string[] } => {
+        const { data: { data }, status } = error;
+        const { errors } = data || {};
+
+        return {
+          status,
+          data: errors || ['Error al obtener la información del curso'],
+        };
+      },
+    }),
   }),
 });
 
@@ -299,4 +319,5 @@ export const {
   useCreateTopicMutation,
   useUpdateTopicMutation,
   useDeleteTopicMutation,
+  useCourseReportsQuery,
 } = api;
