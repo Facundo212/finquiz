@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { FileText } from 'lucide-react';
+import { toast } from 'sonner';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 
 import { Spinner } from '@/components/ui/spinner';
+import { Button } from '@/components/ui/button';
 import ReportsHeader from '@/components/reportsHeader';
 import ReportsStudentTable from '@/components/reportsStudentTable';
 
-import { useCourseReportsQuery } from '@/services/api';
+import { downloadFile } from '@/lib/utils';
+
+import { useCourseReportsQuery, useLazyQuestionsCSVQuery } from '@/services/api';
 
 function Reports() {
   const { courseId } = useParams();
@@ -15,9 +21,35 @@ function Reports() {
     page,
   });
 
+  const [triggerCSVDownload, { data: csvData, error: csvError, isLoading: isDownloading }] = useLazyQuestionsCSVQuery();
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
+
+  const handleExportCSV = () => {
+    if (!courseId) return;
+    triggerCSVDownload({ courseId });
+  };
+
+  useEffect(() => {
+    if (csvData) {
+      const filename = `course_${courseId}_questions_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.csv`;
+      downloadFile(csvData as string, filename);
+    }
+  }, [csvData, courseId]);
+
+  useEffect(() => {
+    if (csvError) {
+      if ('status' in csvError) {
+        const fetchError = csvError as FetchBaseQueryError;
+        const errorMessages = fetchError.data as string[];
+        toast.error(errorMessages?.[0] || 'Error al descargar el archivo CSV');
+      } else {
+        toast.error('Error inesperado al descargar el archivo CSV');
+      }
+    }
+  }, [csvError]);
 
   if (isLoading) {
     return (
@@ -48,8 +80,24 @@ function Reports() {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <h1 className="text-4xl font-semibold">{`Reportes de ${course.name || 'curso'}`}</h1>
-      <br />
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-4xl font-semibold">{`Reportes de ${course.name || 'curso'}`}</h1>
+        <Button
+          onClick={handleExportCSV}
+          disabled={isDownloading}
+          variant="outline"
+          className="flex items-center gap-2"
+        >
+          {isDownloading ? (
+            'Descargando...'
+          ) : (
+            <>
+              <FileText className="w-4 h-4" />
+              Exportar preguntas
+            </>
+          )}
+        </Button>
+      </div>
       <ReportsHeader
         averageCompletedQuestionnaires={averageCompletedQuestionnairesPerStudent}
         averageResult={averageResult}
