@@ -49,6 +49,7 @@ export default tseslint.config(
       ],
       'react/react-in-jsx-scope': 'off',
       'react/require-default-props': 'off',
+      'no-underscore-dangle': 'off',
       'import/extensions': [
         'error',
         'ignorePackages',
@@ -79,4 +80,12 @@ export default tseslint.config(
     files: ['src/components/**/*', 'src/constants/**/*'],
     rules: { 'import/prefer-default-export': 'off' },
   },
+  {
+    files: ['src/components/scoreChart.tsx'],
+    rules: { 'react/no-unstable-nested-components': 'off' },
+  },
+  {
+    files: ['src/components/studyLink.tsx'],
+    rules: { 'jsx-a11y/anchor-is-valid': 'off' },
+  }
 )

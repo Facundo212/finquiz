@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { Trash2 } from 'lucide-react';
 
 import {
   Form,
@@ -26,6 +27,7 @@ interface Topic {
   notes?: string;
   prerequisiteTopicIds?: number[];
   questionTypes?: string[];
+  learningAids?: Array<{ id?: number; name: string; url: string, _destroy?: boolean }>;
 }
 
 // Question types constants with Spanish labels
@@ -36,12 +38,20 @@ const QUESTION_TYPES = [
   { value: 'recall', label: 'Teórica' },
 ];
 
+const learningAidSchema = z.object({
+  id: z.number().optional(),
+  name: z.string().min(1, 'El nombre es requerido'),
+  url: z.string().url('Debe ser una URL válida').min(1, 'La URL es requerida'),
+  _destroy: z.boolean().optional(),
+});
+
 const formSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
   description: z.string().min(1, 'La descripción es requerida'),
   shortDescription: z.string().min(1, 'La descripción corta es requerida'),
   notes: z.string().default(''),
   questionTypes: z.array(z.string()).default([]),
+  learningAids: z.array(learningAidSchema).default([]),
 });
 
 interface TopicFormProps {
@@ -54,6 +64,7 @@ interface TopicFormProps {
     notes?: string;
     prerequisiteTopicIds?: number[];
     questionTypes?: string[];
+    learningAids?: Array<{ id?: number; name: string; url: string, _destroy?: boolean }>;
   };
   submitButtonText?: string;
   secondaryAction?: React.ReactNode;
@@ -86,9 +97,21 @@ function TopicForm({
       description: initialValues.description || '',
       shortDescription: initialValues.shortDescription || '',
       notes: initialValues.notes || '',
+      learningAids: initialValues.learningAids || [],
       questionTypes: initialValues.questionTypes || [],
     },
   });
+
+  const addLearningAid = () => {
+    const currentLearningAids = form.getValues('learningAids');
+    form.setValue('learningAids', [...currentLearningAids, { name: '', url: '' }]);
+  };
+
+  const removeLearningAid = (index: number) => {
+    const currentLearningAids = form.getValues('learningAids');
+    currentLearningAids[index] = { ...currentLearningAids[index], _destroy: true };
+    form.setValue('learningAids', currentLearningAids, { shouldDirty: true });
+  };
 
   const prerequisiteTopicsChanged = useMemo(() => {
     const initialIds = [...(initialValues.prerequisiteTopicIds || [])].sort();
@@ -109,7 +132,7 @@ function TopicForm({
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 max-h-[80vh] overflow-y-auto">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
           <FormField
@@ -198,7 +221,7 @@ function TopicForm({
                       <Checkbox
                         id={questionType.value}
                         checked={field.value?.includes(questionType.value)}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={(checked: boolean) => {
                           const updatedValue = checked
                             ? [...(field.value || []), questionType.value]
                             : (field.value || []).filter((value) => value !== questionType.value);
@@ -233,6 +256,67 @@ function TopicForm({
               />
             </div>
           )}
+          <div className="space-y-4">
+            <FormLabel className="text-base font-medium">Materiales</FormLabel>
+
+            {form.watch('learningAids').map((aid, index) => (
+              <div key={aid.id || index} className={`flex gap-2 items-start p-4 border rounded-lg ${aid._destroy ? 'hidden' : ''}`}>
+                <div className="flex-1 space-y-4">
+                  <FormField
+                    control={form.control}
+                    name={`learningAids.${index}.name`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm">Nombre</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ej: Diapositivas de la clase"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`learningAids.${index}.url`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm">URL</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ej: https://eva.fing.edu.uy"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeLearningAid(index)}
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addLearningAid}
+              disabled={isLoading}
+            >
+              + Material
+            </Button>
+          </div>
 
           <div className="flex justify-end gap-2">
             {secondaryAction}

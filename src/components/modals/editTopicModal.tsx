@@ -17,6 +17,7 @@ interface Topic {
   notes?: string;
   prerequisiteTopicIds?: number[];
   questionTypes?: string[];
+  learningAids?: Array<{ id?: number; name: string; url: string }>;
 }
 
 interface EditUnitsProps {
@@ -93,13 +94,15 @@ function EditTopicModal({
     });
   };
 
+  type LearningAid = { id?: number; name: string; url: string; _destroy?: boolean };
   const handleSubmit = async (data: {
     name: string;
     description: string,
     shortDescription: string,
     notes: string,
     questionTypes: string[],
-    prerequisiteTopics: Topic[]
+    prerequisiteTopics: Topic[],
+    learningAids: LearningAid[],
   }) => {
     await updateTopic({
       courseId,
@@ -113,6 +116,12 @@ function EditTopicModal({
           notes: data.notes,
           prerequisite_topic_ids: data.prerequisiteTopics.map((prereqTopic) => prereqTopic.id),
           question_types: data.questionTypes,
+          learning_aids_attributes: data.learningAids.map((aid) => ({
+            id: aid.id,
+            name: aid.name,
+            url: aid.url,
+            _destroy: aid._destroy,
+          })),
         },
       },
     });
@@ -140,6 +149,7 @@ function EditTopicModal({
           notes: topic.notes,
           prerequisiteTopicIds: topic.prerequisiteTopicIds || [],
           questionTypes: topic.questionTypes || [],
+          learningAids: topic.learningAids,
         }}
         submitButtonText="Actualizar"
         secondaryAction={(

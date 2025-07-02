@@ -16,8 +16,13 @@ function QuestionSection({
 }: {
   question: ExtendedQuestion;
   advanceAction: () => void;
-  answerQuestionAction: (optionId: number) => Promise<{ data: AnswerQuestionResponse } | { error: FetchBaseQueryError | SerializedError }>;
-  voteQuestionAction: (questionId: number, action: 'up_vote' | 'report') => Promise<{ data: ExtendedQuestion } | { error: FetchBaseQueryError | SerializedError }>;
+  answerQuestionAction: (optionId: number) => Promise<
+  { data: AnswerQuestionResponse } | { error: FetchBaseQueryError | SerializedError }
+  >;
+  voteQuestionAction: (
+    questionId: number,
+    action: 'up_vote' | 'report'
+  ) => Promise<{ data: ExtendedQuestion } | { error: FetchBaseQueryError | SerializedError }>;
 }) {
   const [isCorrect, setIsCorrect] = useState<Record<number, boolean>>({});
   const [isAnswered, setIsAnswered] = useState<boolean>(false);

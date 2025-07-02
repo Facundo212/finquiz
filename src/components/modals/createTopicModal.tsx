@@ -49,13 +49,15 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
     }
   }, [error]);
 
+  type LearningAid = { id?: number; name: string; url: string; _destroy?: boolean };
   const handleSubmit = async (data: {
     name: string;
     description: string,
     shortDescription: string,
     notes: string,
     questionTypes: string[],
-    prerequisiteTopics: Topic[]
+    prerequisiteTopics: Topic[],
+    learningAids: LearningAid[],
   }) => {
     await createTopic({
       courseId,
@@ -68,6 +70,12 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
           notes: data.notes,
           prerequisite_topic_ids: data.prerequisiteTopics.map((topic) => topic.id),
           question_types: data.questionTypes,
+          learning_aids_attributes: data.learningAids.map((aid) => ({
+            id: aid.id,
+            name: aid.name,
+            url: aid.url,
+            _destroy: aid._destroy,
+          })),
         },
       },
     });
