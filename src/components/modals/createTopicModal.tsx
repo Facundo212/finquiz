@@ -15,6 +15,7 @@ interface Topic {
   shortDescription: string;
   notes?: string;
   prerequisiteTopicIds?: number[];
+  questionTypes?: string[];
 }
 
 interface CreateUnitsProps {
@@ -53,6 +54,7 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
     description: string,
     shortDescription: string,
     notes: string,
+    questionTypes: string[],
     prerequisiteTopics: Topic[]
   }) => {
     await createTopic({
@@ -65,6 +67,7 @@ function CreateTopicModal({ courseId, unitId }: CreateUnitsProps) {
           short_description: data.shortDescription,
           notes: data.notes,
           prerequisite_topic_ids: data.prerequisiteTopics.map((topic) => topic.id),
+          question_types: data.questionTypes,
         },
       },
     });
