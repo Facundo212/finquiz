@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -13,6 +14,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import PrerequisiteTopicsManager from '@/components/prerequisiteTopicsManager';
+
+interface Topic {
+  id: number;
+  name: string;
+  description: string;
+  shortDescription: string;
+  notes?: string;
+  prerequisiteTopicIds?: number[];
+}
 
 const formSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
@@ -22,16 +33,19 @@ const formSchema = z.object({
 });
 
 interface TopicFormProps {
-  onSubmit: (data: z.infer<typeof formSchema>) => void;
+  onSubmit: (data: z.infer<typeof formSchema> & { prerequisiteTopics: Topic[] }) => void;
   isLoading?: boolean;
   initialValues?: {
     name?: string;
     description?: string;
     shortDescription?: string;
     notes?: string;
+    prerequisiteTopicIds?: number[];
   };
   submitButtonText?: string;
   secondaryAction?: React.ReactNode;
+  allTopics?: Topic[];
+  currentTopicId?: number;
 }
 
 function TopicForm({
@@ -40,7 +54,18 @@ function TopicForm({
   initialValues = {},
   submitButtonText = 'Guardar',
   secondaryAction,
+  allTopics = [],
+  currentTopicId,
 }: TopicFormProps) {
+  // Convert initial prerequisite topic IDs to full Topic objects
+  const initialPrerequisiteTopics = (initialValues.prerequisiteTopicIds || [])
+    .map((id) => allTopics.find((t) => t.id === id))
+    .filter((t): t is Topic => t !== undefined);
+
+  const [prerequisiteTopics, setPrerequisiteTopics] = useState<Topic[]>(
+    initialPrerequisiteTopics,
+  );
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,10 +76,28 @@ function TopicForm({
     },
   });
 
+  const prerequisiteTopicsChanged = useMemo(() => {
+    const initialIds = [...(initialValues.prerequisiteTopicIds || [])].sort();
+    const currentIds = [...prerequisiteTopics.map((t) => t.id)].sort();
+
+    if (initialIds.length !== currentIds.length) {
+      return true;
+    }
+
+    return !initialIds.every((id, index) => id === currentIds[index]);
+  }, [prerequisiteTopics, initialValues.prerequisiteTopicIds]);
+
+  // Determine if the form is dirty (either form fields or prerequisite topics changed)
+  const isFormDirty = form.formState.isDirty || prerequisiteTopicsChanged;
+
+  const handleFormSubmit = (data: z.infer<typeof formSchema>) => {
+    onSubmit({ ...data, prerequisiteTopics });
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
           <FormField
             control={form.control}
             name="name"
@@ -129,9 +172,21 @@ function TopicForm({
             )}
           />
 
+          {allTopics.length > 0 && (
+            <div className="space-y-2">
+              <FormLabel>Temas Previos</FormLabel>
+              <PrerequisiteTopicsManager
+                allTopics={allTopics}
+                selectedTopics={prerequisiteTopics}
+                currentTopicId={currentTopicId}
+                onChange={setPrerequisiteTopics}
+              />
+            </div>
+          )}
+
           <div className="flex justify-end gap-2">
             {secondaryAction}
-            <Button type="submit" disabled={isLoading || !form.formState.isDirty}>
+            <Button type="submit" disabled={isLoading || !isFormDirty}>
               {submitButtonText}
             </Button>
           </div>
