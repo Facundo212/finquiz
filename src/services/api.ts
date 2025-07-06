@@ -144,6 +144,7 @@ export const api = createApi({
                     shortDescription: string,
                     notes?: string | null,
                     prerequisiteTopicIds?: number[]
+                    questionTypes?: string[]
                   }) => ({
                     id: topic.id,
                     name: topic.name,
@@ -151,6 +152,7 @@ export const api = createApi({
                     shortDescription: topic.shortDescription,
                     notes: topic.notes ?? '',
                     prerequisiteTopicIds: topic.prerequisiteTopicIds ?? [],
+                    questionTypes: topic.questionTypes ?? [],
                   }),
                 ),
               }),
@@ -233,7 +235,16 @@ export const api = createApi({
       query: ({ courseId, unitId, body }: {
         courseId: string;
         unitId: string;
-        body: { topic: { name: string; description: string, short_description: string, notes?: string, prerequisite_topic_ids?: number[] } };
+        body: {
+          topic: {
+            name: string;
+            description: string,
+            short_description: string,
+            notes?: string,
+            prerequisite_topic_ids?: number[],
+            question_types?: string[]
+          }
+        };
       }) => ({
         url: `api/v1/courses/${courseId}/units/${unitId}/topics`,
         method: 'POST',
@@ -257,7 +268,16 @@ export const api = createApi({
         courseId: string;
         unitId: string;
         topicId: string;
-        body: { topic: { name?: string; description?: string; short_description?: string, notes?: string, prerequisite_topic_ids?: number[] } };
+        body: {
+          topic: {
+            name?: string;
+            description?: string;
+            short_description?: string,
+            notes?: string,
+            prerequisite_topic_ids?: number[],
+            question_types?: string[]
+          }
+        };
       }) => ({
         url: `api/v1/courses/${courseId}/units/${unitId}/topics/${topicId}`,
         method: 'PUT',

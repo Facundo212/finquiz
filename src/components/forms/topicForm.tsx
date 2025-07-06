@@ -14,7 +14,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import PrerequisiteTopicsManager from '@/components/prerequisiteTopicsManager';
+import { cn } from '@/lib/utils';
 
 interface Topic {
   id: number;
@@ -23,13 +25,23 @@ interface Topic {
   shortDescription: string;
   notes?: string;
   prerequisiteTopicIds?: number[];
+  questionTypes?: string[];
 }
+
+// Question types constants with Spanish labels
+const QUESTION_TYPES = [
+  { value: 'correct_output', label: 'Salida Correcta' },
+  { value: 'fill_in_the_blank', label: 'Relleno de Espacios en Blanco' },
+  { value: 'code_analysis', label: 'Análisis de Código' },
+  { value: 'recall', label: 'Teórica' },
+];
 
 const formSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
   description: z.string().min(1, 'La descripción es requerida'),
   shortDescription: z.string().min(1, 'La descripción corta es requerida'),
   notes: z.string().default(''),
+  questionTypes: z.array(z.string()).default([]),
 });
 
 interface TopicFormProps {
@@ -41,6 +53,7 @@ interface TopicFormProps {
     shortDescription?: string;
     notes?: string;
     prerequisiteTopicIds?: number[];
+    questionTypes?: string[];
   };
   submitButtonText?: string;
   secondaryAction?: React.ReactNode;
@@ -73,6 +86,7 @@ function TopicForm({
       description: initialValues.description || '',
       shortDescription: initialValues.shortDescription || '',
       notes: initialValues.notes || '',
+      questionTypes: initialValues.questionTypes || [],
     },
   });
 
@@ -167,6 +181,42 @@ function TopicForm({
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="questionTypes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipos de Pregunta Soportadas</FormLabel>
+                <div className="space-y-4 mt-3">
+                  {QUESTION_TYPES.map((questionType) => (
+                    <div key={questionType.value} className="flex items-center space-x-3">
+                      <Checkbox
+                        id={questionType.value}
+                        checked={field.value?.includes(questionType.value)}
+                        onCheckedChange={(checked) => {
+                          const updatedValue = checked
+                            ? [...(field.value || []), questionType.value]
+                            : (field.value || []).filter((value) => value !== questionType.value);
+                          field.onChange(updatedValue);
+                        }}
+                      />
+                      <label
+                        htmlFor={questionType.value}
+                        className={cn(
+                          'text-sm font-normal leading-none text-muted-foreground cursor-pointer',
+                          'peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+                        )}
+                      >
+                        {questionType.label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
                 <FormMessage />
               </FormItem>
             )}

@@ -16,6 +16,7 @@ interface Topic {
   shortDescription: string;
   notes?: string;
   prerequisiteTopicIds?: number[];
+  questionTypes?: string[];
 }
 
 interface EditUnitsProps {
@@ -97,6 +98,7 @@ function EditTopicModal({
     description: string,
     shortDescription: string,
     notes: string,
+    questionTypes: string[],
     prerequisiteTopics: Topic[]
   }) => {
     await updateTopic({
@@ -110,6 +112,7 @@ function EditTopicModal({
           short_description: data.shortDescription,
           notes: data.notes,
           prerequisite_topic_ids: data.prerequisiteTopics.map((prereqTopic) => prereqTopic.id),
+          question_types: data.questionTypes,
         },
       },
     });
@@ -120,7 +123,7 @@ function EditTopicModal({
       open={isDialogOpen}
       onOpenChange={setIsDialogOpen}
       trigger={(
-        <Badge key={topic.id} variant="defaultTopic" className="break-words max-w-full">
+        <Badge key={topic.id} variant="defaultTopic" className="cursor-pointer break-words max-w-ful hover:bg-[#F0B7A4]/90">
           {topic.name}
         </Badge>
       )}
@@ -136,6 +139,7 @@ function EditTopicModal({
           shortDescription: topic.shortDescription,
           notes: topic.notes,
           prerequisiteTopicIds: topic.prerequisiteTopicIds || [],
+          questionTypes: topic.questionTypes || [],
         }}
         submitButtonText="Actualizar"
         secondaryAction={(
