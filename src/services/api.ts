@@ -130,6 +130,7 @@ export const api = createApi({
                   description: string;
                   shortDescription: string;
                   notes: string | null | undefined;
+                  learningAids?: { id?: number; name: string; url: string }[];
                 }[];
               }) => ({
                 id: unit.id,
@@ -139,12 +140,13 @@ export const api = createApi({
                 topics: unit.topics.map(
                   (topic: {
                     id: number;
-                    name: string,
-                    description: string,
-                    shortDescription: string,
-                    notes?: string | null,
-                    prerequisiteTopicIds?: number[]
-                    questionTypes?: string[]
+                    name: string;
+                    description: string;
+                    shortDescription: string;
+                    notes?: string | null;
+                    prerequisiteTopicIds?: number[];
+                    questionTypes?: string[];
+                    learningAids?: { id?: number; name: string; url: string }[];
                   }) => ({
                     id: topic.id,
                     name: topic.name,
@@ -153,6 +155,7 @@ export const api = createApi({
                     notes: topic.notes ?? '',
                     prerequisiteTopicIds: topic.prerequisiteTopicIds ?? [],
                     questionTypes: topic.questionTypes ?? [],
+                    learningAids: topic.learningAids,
                   }),
                 ),
               }),
@@ -238,11 +241,12 @@ export const api = createApi({
         body: {
           topic: {
             name: string;
-            description: string,
-            short_description: string,
-            notes?: string,
-            prerequisite_topic_ids?: number[],
-            question_types?: string[]
+            description: string;
+            short_description: string;
+            notes?: string;
+            prerequisite_topic_ids?: number[];
+            question_types?: string[];
+            learning_aids_attributes?: { id?: number; name: string; url: string, _destroy?: boolean }[];
           }
         };
       }) => ({
@@ -272,10 +276,11 @@ export const api = createApi({
           topic: {
             name?: string;
             description?: string;
-            short_description?: string,
-            notes?: string,
-            prerequisite_topic_ids?: number[],
-            question_types?: string[]
+            short_description?: string;
+            notes?: string;
+            prerequisite_topic_ids?: number[];
+            question_types?: string[];
+            learning_aids_attributes?: { id?: number; name: string; url: string; _destroy?: boolean }[];
           }
         };
       }) => ({

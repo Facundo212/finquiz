@@ -4,6 +4,11 @@ export interface Topic {
   id: number;
   name: string;
   shortDescription: string;
+  learningAids: {
+    id: number;
+    name: string;
+    url: string;
+  }[];
 }
 
 export interface Question {
@@ -65,6 +70,15 @@ export interface AnswerQuestionResponse {
 
 export interface QuestionnaireSummary extends Questionnaire {
   questions: ExtendedQuestion[];
+  stats: {
+    total: number;
+    stats_by_topic: {
+      topic_id: number;
+      topic_name: string;
+      total: number;
+    }[];
+  };
+  topics: Topic[];
 }
 
 interface CreateQuestionnaireRequest {

@@ -1,18 +1,17 @@
 import { useState } from 'react';
 
+import { Topic } from '@/services/questionnaires';
+
 import BaseModal from '@/components/modals/baseModal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { TopicLearningAids } from '@/components/topicLearningAids';
 
 interface TopicsInfoModalProps {
   className?: string;
   modalTitle?: string;
   badgeColor?: string;
-  topics: {
-    id: number;
-    name: string;
-    shortDescription?: string
-  }[];
+  topics: Topic[];
 }
 
 function TopicsInfoModal({
@@ -63,6 +62,13 @@ function TopicsInfoModal({
                   <p className="text-xs text-muted-foreground ml-1">
                     {topic.shortDescription || 'No hay descripción disponible.'}
                   </p>
+
+                  <div className="my-4">
+                    <h3 className="font-bold">
+                      {`Para repasar ${topic.name}`}
+                    </h3>
+                    <TopicLearningAids topic={topic} />
+                  </div>
                 </div>
               ))}
             </div>

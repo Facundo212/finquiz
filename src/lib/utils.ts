@@ -27,3 +27,13 @@ export const downloadFile = (data: string, filename: string, mimeType: string = 
 
   URL.revokeObjectURL(url);
 };
+
+export function extractDomain(url: string): string {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.hostname;
+  } catch (error) {
+    const domainMatch = url.match(/^(?:https?:\/\/)?([^/]+)/);
+    return domainMatch ? domainMatch[1] : '';
+  }
+}
