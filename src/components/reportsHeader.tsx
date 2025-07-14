@@ -1,5 +1,5 @@
 import {
-  BookUp, BookDown, ListCheck, UsersRound,
+  ListCheck, UsersRound,
 } from 'lucide-react';
 
 import {
@@ -28,11 +28,11 @@ function ReportsHeader({
   worstTopic,
   activeStudents,
 }: ReportsHeaderProps) {
-  const topicBadge = (topic: string, emptyText: string) => {
+  const topicBadge = (topic: string, emptyText: string, className?: string) => {
     if (!topic) return <p>{emptyText}</p>;
 
     return (
-      <Badge variant="defaultTopic">
+      <Badge variant="defaultTopic" className={className}>
         {topic}
       </Badge>
     );
@@ -51,13 +51,11 @@ function ReportsHeader({
     {
       title: 'Temas con mejor y peor desempeño',
       content: (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-6">
           <div className="flex gap-2 text-sm text-muted-foreground items-center justify-start">
-            <BookUp color="var(--green-600)" size={40} />
-            {topicBadge(bestTopic, 'No hay temas destacados')}
+            {topicBadge(bestTopic, 'No hay temas destacados', 'bg-[#abc2ba]')}
           </div>
           <div className="flex gap-2 text-sm text-muted-foreground items-center justify-start">
-            <BookDown color="var(--red-600)" size={40} />
             {topicBadge(worstTopic, 'No hay temas a mejorar')}
           </div>
         </div>

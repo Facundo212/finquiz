@@ -59,12 +59,13 @@ function Navbar() {
           <DropdownMenuTrigger asChild>
             <Avatar className="cursor-pointer">
               <AvatarFallback>
-                {name?.split(' ').map((n) => n[0]).join('').toUpperCase()}
+                {name?.split(' ').slice(0, 2).map((n) => n[0]).join('')
+                  .toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="m-6 my-0 w-48">
-            <DropdownMenuLabel className="font-light">{email}</DropdownMenuLabel>
+            <DropdownMenuLabel className="font-light truncate">{email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {role === 'student' && (
               <DropdownMenuItem
