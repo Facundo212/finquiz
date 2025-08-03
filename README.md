@@ -1,54 +1,135 @@
-# React + TypeScript + Vite
+# Finquiz
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Finquiz is an intelligent educational quiz platform built with React and TypeScript, designed to help students learn through interactive questionnaires and AI-generated questions.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [🛠️ Tech Stack](#-tech-stack)
+- [🚀 Getting Started](#-getting-started)
+- [🎯 Key Concepts](#-key-concepts)
+- [🔧 Configuration](#-configuration)
+- [🎨 Styling](#-styling)
+- [📊 Data Flow](#-data-flow)
+- [🏗️ Project Structure](#-project-structure)
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Main**: React 19, TypeScript, Vite
+- **Styling**: Tailwind CSS, CSS Variables for theming
+- **State Management**: Redux Toolkit with RTK Query
+- **Routing**: React Router v7
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🚀 Getting Started
+
+### Prerequisites
+
+Before running this project, you need to have Node.js and npm installed on your system.
+
+#### Installing Node.js and npm
+
+**Option 1: Download from official website (Recommended)**
+1. Visit [nodejs.org](https://nodejs.org/)
+2. Download the LTS version (v18 or higher)
+3. Run the installer and follow the setup wizard
+4. npm comes bundled with Node.js
+
+**Option 2: Using a package manager**
+
+**macOS (using Homebrew):**
+```bash
+brew install node
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Windows (using Chocolatey):**
+```bash
+choco install nodejs
+```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**Linux (Ubuntu/Debian):**
+```bash
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+**Verify installation:**
+```bash
+node --version  # Should show v18.0.0 or higher
+npm --version   # Should show npm version
+```
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd finquiz
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+## 🎯 Key Concepts
+
+### Questionnaires
+Students can create questionnaires by selecting specific course units. The system generates questions dynamically based on the selected topics, with AI-powered explanations for each answer.
+
+### Course Structure
+- **Courses**: Top-level educational content
+- **Units**: Logical groupings within courses
+- **Topics**: Specific subjects within units
+- **Questions**: AI-generated questions based on topics
+
+### User Roles
+- **Students**: Take questionnaires, view results, access learning materials
+- **Teachers**: Manage courses, view student reports, export data
+
+## 🔧 Configuration
+
+### Required Environment Variables
+
+1. **Copy the example environment file**
+   ```bash
+   cp .env.example .env
+   ```
+
+## 🎨 Styling
+
+The application uses a modern design system with:
+- Tailwind CSS for utility-first styling
+- CSS custom properties for theming
+- Radix UI primitives for accessible components
+- Responsive design patterns
+
+## 📊 Data Flow
+
+1. Students select course units to create a questionnaire
+2. The system generates questions based on selected topics
+3. Students answer questions with real-time feedback
+4. Results are analyzed and presented with detailed breakdowns
+5. Teachers can view comprehensive reports and analytics
+
+## 🏗️ Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Base UI components (shadcn/ui)
+│   ├── modals/         # Modal components
+│   └── forms/          # Form components
+├── containers/         # Page-level components
+├── services/           # API services and data fetching
+├── reducers/           # Redux store configuration
+├── constants/          # App constants and Pascal facts
+├── lib/               # Utility functions
+├── layouts/           # Layout components
+└── hocs/              # Higher-order components
 ```
