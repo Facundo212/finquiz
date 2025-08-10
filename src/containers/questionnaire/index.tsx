@@ -4,8 +4,9 @@ import { useDispatch } from 'react-redux';
 
 import { LoaderQuestionnaire } from '@/components/loaderQuestionnaire';
 import { ProgressCard } from '@/components/progressCard';
+import { PageHeader } from '@/components/pageHeader';
 
-import type { Questionnaire } from '@/services/questionnaires'; // TODO: Make all types be imported like this
+import type { Questionnaire } from '@/services/questionnaires';
 
 import {
   useGetQuestionnaireQuery, useAnswerQuestionMutation, useGetQuestionQuery, useVoteQuestionMutation,
@@ -91,6 +92,10 @@ function Questionnaire() {
 
   return (
     <div className="p-12 h-full">
+      <PageHeader>
+        <h1 className="text-4xl font-bold">Cuestionario: {questionnaireData?.name || ''}</h1>
+      </PageHeader>
+
       {
         isFinished ? (
           <div className="flex flex-col items-center justify-center gap-4 h-full transition-all duration-500

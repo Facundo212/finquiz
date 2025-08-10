@@ -25,6 +25,7 @@ import { QuestionCard } from '@/components/questionCard';
 import { ProgressCard } from '@/components/progressCard';
 import { ResultsChart } from '@/components/resultsChart';
 import { TopicLearningAids } from '@/components/topicLearningAids';
+import { PageHeader } from '@/components/pageHeader';
 
 const totalChartConfig = {
   resultado: {
@@ -109,6 +110,10 @@ function QuestionnaireSummary() {
 
   return (
     <div className="p-12">
+      <PageHeader navigateBack="/my-questionnaires">
+        <h1 className="text-4xl font-bold">Resumen del Cuestionario: {data?.name}</h1>
+      </PageHeader>
+
       <div className="flex gap-12 py-8 transition-all duration-500">
         <ProgressCard questionnaire={data!} hideProgress />
         <div className="w-full">
