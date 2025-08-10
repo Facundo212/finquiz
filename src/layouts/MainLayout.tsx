@@ -1,8 +1,11 @@
 import { Outlet } from 'react-router-dom';
 
 import Navbar from '@/components/navbar';
+import useTokenExpiry from '@/hooks/useTokenExpiry';
 
 function MainLayout() {
+  useTokenExpiry();
+
   return (
     <>
       <Navbar />

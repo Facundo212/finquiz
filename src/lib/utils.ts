@@ -37,3 +37,12 @@ export function extractDomain(url: string): string {
     return domainMatch ? domainMatch[1] : '';
   }
 }
+
+export function isTokenExpired(expiry: string | null): boolean {
+  if (!expiry) return true;
+
+  const expiryTimestamp = parseInt(expiry, 10);
+  const currentTimestamp = Math.floor(Date.now() / 1000);
+
+  return currentTimestamp >= expiryTimestamp;
+}

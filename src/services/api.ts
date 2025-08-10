@@ -1,5 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 import { RootState } from '@/reducers/store';
+import { clearSession } from '@/reducers/session/sessionSlice';
+import { isTokenExpired } from '@/lib/utils';
 
 export interface ErrorResponse {
   data: {
@@ -10,36 +14,65 @@ export interface ErrorResponse {
   status: number;
 }
 
+const baseQuery = fetchBaseQuery({
+  baseUrl: import.meta.env.VITE_PUBLIC_API_URL,
+  prepareHeaders: (headers, { getState }) => {
+    const { accessToken, client, uid } = (getState() as RootState).session;
+
+    if (accessToken && client && uid) {
+      headers.set('access-token', accessToken);
+      headers.set('client', client);
+      headers.set('uid', uid);
+    }
+
+    return headers;
+  },
+  responseHandler: async (response) => {
+    const { headers } = response;
+    const accessToken = headers.get('access-token');
+    const client = headers.get('client');
+    const uid = headers.get('uid');
+    const expiry = headers.get('expiry');
+
+    return {
+      data: await response.json(),
+      meta: {
+        accessToken, client, uid, expiry,
+      },
+    };
+  },
+});
+
+const baseQueryWithTokenExpiry: BaseQueryFn<
+string | FetchArgs,
+unknown,
+FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const state = api.getState() as RootState;
+  const { expiry, accessToken } = state.session;
+
+  if (accessToken && isTokenExpired(expiry)) {
+    api.dispatch(clearSession());
+    return {
+      error: {
+        status: 401,
+        data: { message: 'Token expired' },
+      } as FetchBaseQueryError,
+    };
+  }
+
+  const result = await baseQuery(args, api, extraOptions);
+
+  if (result.error && result.error.status === 401 && accessToken) {
+    api.dispatch(clearSession());
+  }
+
+  return result;
+};
+
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_PUBLIC_API_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const { accessToken, client, uid } = (getState() as RootState).session;
-
-      if (accessToken && client && uid) {
-        headers.set('access-token', accessToken);
-        headers.set('client', client);
-        headers.set('uid', uid);
-      }
-
-      return headers;
-    },
-    responseHandler: async (response) => {
-      const { headers } = response;
-      const accessToken = headers.get('access-token');
-      const client = headers.get('client');
-      const uid = headers.get('uid');
-      const expiry = headers.get('expiry');
-
-      return {
-        data: await response.json(),
-        meta: {
-          accessToken, client, uid, expiry,
-        },
-      };
-    },
-  }),
+  baseQuery: baseQueryWithTokenExpiry,
   tagTypes: ['Course', 'Questionnaire', 'Question'],
   endpoints: (builder) => ({
     login: builder.mutation({

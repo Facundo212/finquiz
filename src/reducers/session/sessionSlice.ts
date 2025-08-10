@@ -36,9 +36,34 @@ export const sessionSlice = createSlice({
       ...state,
       ...payload,
     }),
+    clearSession: () => {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('client');
+      localStorage.removeItem('uid');
+      localStorage.removeItem('expiry');
+      localStorage.removeItem('name');
+      localStorage.removeItem('email');
+      localStorage.removeItem('nickname');
+      localStorage.removeItem('role');
+      localStorage.removeItem('selectedCourseId');
+
+      return {
+        accessToken: null,
+        client: null,
+        uid: null,
+        expiry: null,
+        user: {
+          name: null,
+          email: null,
+          nickname: null,
+          role: null,
+          selectedCourseId: null,
+        },
+      };
+    },
   },
 });
 
-export const { setSession } = sessionSlice.actions;
+export const { setSession, clearSession } = sessionSlice.actions;
 
 export default sessionSlice.reducer;
