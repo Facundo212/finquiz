@@ -49,8 +49,12 @@ function Navbar() {
           border-none p-0 cursor-pointer hover:opacity-80
           focus:outline-none focus:ring-2 focus:ring-offset-2
           focus:ring-offset-primary focus:ring-white
+          flex items-center gap-3
         "
       >
+        <div className="bg-white rounded-full p-1">
+          <img src="/finquiz.png" alt="FinQuiz" className="w-6 h-6" />
+        </div>
         FinQuiz
       </button>
       <div className="flex items-center gap-3">
