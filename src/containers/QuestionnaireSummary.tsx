@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Check, X } from 'lucide-react';
+import { Check, X, FlagTriangleRight } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -67,6 +67,7 @@ function QuestionnaireSummary() {
   const answerStatusIcon = (question: ExtendedQuestion) => {
     if (question.correct === true) return <Check className="w-6 h-6 text-green-700" />;
     if (question.correct === false) return <X className="w-6 h-6 text-red-700" />;
+    if (question.score < 0) return <FlagTriangleRight className="w-6 h-6 text-gray-700" />;
 
     return null;
   };
