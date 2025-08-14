@@ -18,6 +18,14 @@ interface OptionButtonProps {
 function OptionButton({
   option, handleAnswerQuestion, isAnswered, isCorrect, optionLetter,
 }: OptionButtonProps) {
+  const processedText = useMemo(() => {
+    const hasTrailingBlank = /(?: |\u00A0)$/.test(option.text);
+    if (hasTrailingBlank) {
+      return option.text.replace(/(?: |\u00A0)+$/, (match) => match.split('').map(() => '⎵').join(''));
+    }
+    return option.text;
+  }, [option.text]);
+
   const answerStatusColors = useMemo(() => {
     if (isCorrect === true) return 'border-2 border-green-700 bg-green-50';
     if (isCorrect === false) return 'border-2 border-red-700 bg-red-50';
@@ -53,7 +61,7 @@ function OptionButton({
               {optionLetter}
             </div>
             <div className="whitespace-pre-line">
-              <Markdown>{option.text}</Markdown>
+              <Markdown>{processedText}</Markdown>
             </div>
             {answerStatusIcon}
           </div>
