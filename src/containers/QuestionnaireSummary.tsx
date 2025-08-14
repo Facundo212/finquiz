@@ -111,12 +111,16 @@ function QuestionnaireSummary() {
   return (
     <div className="p-12">
       <PageHeader navigateBack="/my-questionnaires">
-        <h1 className="text-4xl font-bold">Resumen del Cuestionario: {data?.name}</h1>
+        <h1 className="text-4xl font-bold">
+          Resumen del Cuestionario:
+          {data?.name}
+        </h1>
       </PageHeader>
 
-      <div className="flex gap-12 py-8 transition-all duration-500">
+      <div className="flex gap-12 py-8 transition-all duration-500 items-start">
         <ProgressCard questionnaire={data!} hideProgress />
-        <div className="w-full">
+
+        <div className="flex-1 min-w-0">
           <Card className="mb-12 transition-[height] duration-1000 ease-out">
             <CardHeader>
               <CardTitle className="text-2xl">Resultado Total</CardTitle>
@@ -132,29 +136,31 @@ function QuestionnaireSummary() {
                   Haz click en un tema para ver materiales de estudio.
                 </p>
 
-                <div className="flex flex-row">
-                  <ResultsChart
-                    data={topicChartData || []}
-                    chartConfig={topicChartConfig}
-                    onClickBar={(barId) => handleSelectTopicBar(Number(barId))}
-                    onClickLabel={(label) => handleSelectTopicLabel(label)}
-                  />
+                <div className="flex flex-row items-start">
+                  <div className="flex-1 min-w-0">
+                    <ResultsChart
+                      data={topicChartData || []}
+                      chartConfig={topicChartConfig}
+                      onClickBar={(barId) => handleSelectTopicBar(Number(barId))}
+                      onClickLabel={(label) => handleSelectTopicLabel(label)}
+                    />
+                  </div>
 
-                  <div className={cn(
-                    'transition-all duration-200 ease-in-out overflow-hidden',
-                    selectedTopic ? 'ml-4 w-full opacity-100' : 'w-0 opacity-0',
-                  )}>
-                    {
-                      selectedTopicData && (
-                        <>
-                          <h4 className="font-semibold">Para repasar</h4>
-                          <TopicLearningAids
-                            topic={selectedTopicData}
-                            className="w-3/4"
-                          />
-                        </>
-                      )
-                    }
+                  <div
+                    className={cn(
+                      'transition-all duration-200 ease-in-out overflow-hidden shrink-0',
+                      selectedTopic ? 'ml-4 w-[420px] opacity-100' : 'w-0 opacity-0',
+                    )}
+                  >
+                    {selectedTopicData && (
+                      <>
+                        <h4 className="font-semibold">Para repasar</h4>
+                        <TopicLearningAids
+                          topic={selectedTopicData}
+                          className="w-full"
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import {
-  Bar, BarChart, XAxis, YAxis,
+  Bar, BarChart, XAxis, YAxis, Rectangle,
 } from 'recharts';
 
 import {
@@ -49,13 +49,14 @@ function ResultsChart({
           tickFormatter={(value) => String(chartConfig[value as keyof typeof chartConfig]?.label || value)}
           cursor={onClickLabel ? 'pointer' : undefined}
         />
-        <XAxis dataKey="resultado" type="number" hide />
+        <XAxis dataKey="resultado" type="number" domain={[0, 100]} hide />
         <Bar
           dataKey="resultado"
           layout="vertical"
           fill="var(--color-resultado)"
           radius={4}
           barSize={barHeight}
+          background={<Rectangle radius={4} fill="#e5e7eb" />}
           onClick={(bar) => onClickBar?.(bar.id)}
           cursor={onClickBar ? 'pointer' : undefined}
         />
