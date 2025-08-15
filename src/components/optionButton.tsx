@@ -57,7 +57,7 @@ function OptionButton({
       <Card className={cn('border-2 transition-all duration-1000', answerStatusColors, answerStatusBackground)}>
         <CardContent>
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center text-3xl font-bold">
+            <div className="w-16 h-16 rounded-full border-2 border-primary flex items-center justify-center text-3xl font-bold flex-shrink-0">
               {optionLetter}
             </div>
             <div className="whitespace-pre-line">

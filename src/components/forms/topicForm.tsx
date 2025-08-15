@@ -132,7 +132,7 @@ function TopicForm({
   };
 
   return (
-    <div className="flex flex-col gap-6 max-h-[80vh] overflow-y-auto">
+    <div className="flex flex-col gap-6 max-h-[80vh]">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
           <FormField

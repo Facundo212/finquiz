@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { useLoginMutation } from '@/services/api';
+import { useLoginMutation, api } from '@/services/api';
 import { setSession } from '@/reducers/session/sessionSlice';
 
 const formSchema: z.ZodSchema = z.object({
@@ -55,6 +55,10 @@ function Login() {
       }
     }
   }, [error]);
+
+  useEffect(() => {
+    dispatch(api.util.resetApiState());
+  }, [dispatch]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

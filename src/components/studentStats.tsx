@@ -66,7 +66,7 @@ function StudentStats({ stats }: StudentStatsProps) {
             </h3>
           </div>
 
-          <div className="flex flex-wrap gap-1 justify-center items-start px-2 py-2">
+          <div className="flex flex-wrap gap-1 justify-center items-center px-2 py-2 flex-1">
             { failureTopics && failureTopics.length > 0 ? (
               failureTopics.slice(0, 4).map((topic) => (
                 <Badge key={topic.id} variant="defaultTopic">
@@ -74,19 +74,19 @@ function StudentStats({ stats }: StudentStatsProps) {
                 </Badge>
               ))
             ) : (
-              <Badge variant="defaultTopic">
-                No hay temas de mejora
-              </Badge>
+              <p className="text-[#8d2300]">No hay temas de mejora</p>
             )}
           </div>
 
-          <div className="text-center">
-            <TopicsInfoModal
-              className="text-sm text-primary cursor-pointer hover:text-primary hover:font-bold transition-all duration-200"
-              modalTitle="Ver más"
-              topics={failureTopics || []}
-            />
-          </div>
+          {failureTopics && failureTopics.length > 0 && (
+            <div className="text-center">
+              <TopicsInfoModal
+                className="text-sm text-primary cursor-pointer hover:text-primary hover:font-bold transition-all duration-200"
+                modalTitle="Ver más"
+                topics={failureTopics || []}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -96,11 +96,11 @@ function StudentStats({ stats }: StudentStatsProps) {
         <CardContent className="flex flex-col justify-between h-full p-6 pt-4">
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-800 leading-tight">
-              La rompes con tus respuestas en
+              Temas Dominados
             </h3>
           </div>
 
-          <div className="flex flex-wrap gap-1 justify-center items-start px-2 py-2">
+          <div className="flex flex-wrap gap-1 justify-center items-center px-2 py-2 flex-1">
             {successTopics && successTopics.length > 0 ? (
               successTopics.slice(0, 4).map((topic) => (
                 <Badge key={topic.id} className="text-black bg-[#abc2ba] px-3 py-1">
@@ -108,20 +108,20 @@ function StudentStats({ stats }: StudentStatsProps) {
                 </Badge>
               ))
             ) : (
-              <Badge className="text-black bg-[#abc2ba] px-3 py-1">
-                No hay temas destacados
-              </Badge>
+              <p className="text-[#025331]"> No hay temas destacados</p>
             )}
           </div>
 
-          <div className="text-center">
-            <TopicsInfoModal
-              className="text-sm text-primary cursor-pointer hover:text-primary hover:font-bold transition-all duration-200"
-              modalTitle="Ver más"
-              badgeColor="#abc2ba"
-              topics={successTopics || []}
-            />
-          </div>
+          {successTopics && successTopics.length > 0 && (
+            <div className="text-center">
+              <TopicsInfoModal
+                className="text-sm text-primary cursor-pointer hover:text-primary hover:font-bold transition-all duration-200"
+                modalTitle="Ver más"
+                badgeColor="#abc2ba"
+                topics={successTopics || []}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
